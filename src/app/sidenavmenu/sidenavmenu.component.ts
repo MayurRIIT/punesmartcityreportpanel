@@ -52,27 +52,36 @@ export class SidenavmenuComponent implements OnInit {
         
         let obj = {};
         moduleArray.map(moduleelement => {
-          webMainModules.map(mainModule => {
-            if(mainModule.webmodules && mainModule.webmodules.length == 0 && mainModule.url != ""){
-              mainModule.children = [];
-              mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
-              obj[mainModule._id] = mainModule;
-            }else{
-              mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
-              mainModule.webmodules.find(mainModuleelement => {
-                if(mainModuleelement._id == moduleelement._id){
-                  mainModuleelement.webMainModuleId = mainModule;
-                  if(mainModule.children){
-                    mainModule.children.push(mainModuleelement);
-                  }else{
-                    mainModule.children = [mainModuleelement];
-                  }
-                  
-                  obj[mainModule._id] = mainModule
-                }          
-              });
-            }    
-          });
+
+          let hideArr = ['Content Status Report','Daily Summary Report','Enrollment Payment Report','Coupon Usage Report','Sponsor Summary Report','व्याख्यानमाला','Video - Medium Mapping','Role-Cost Manage','Assign Referral Code']
+
+          if(hideArr.indexOf(moduleelement.name) > -1){
+            
+          }else{
+            webMainModules.map(mainModule => {
+            
+              if(mainModule.webmodules && mainModule.webmodules.length == 0 && mainModule.url != ""){
+                mainModule.children = [];
+                mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
+                obj[mainModule._id] = mainModule;
+              }else{
+                mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
+                mainModule.webmodules.find(mainModuleelement => {
+                  if(mainModuleelement._id == moduleelement._id){
+                    mainModuleelement.webMainModuleId = mainModule;
+                    if(mainModule.children){
+                      mainModule.children.push(mainModuleelement);
+                    }else{
+                      mainModule.children = [mainModuleelement];
+                    }
+                    
+                    obj[mainModule._id] = mainModule
+                  }          
+                });
+              }    
+            });
+          }
+         
         });
 
         moduleArray = [];

@@ -228,7 +228,7 @@ export class SchoolDashboardComponent implements OnInit {
       console.log(this.stateArray);
       if(this.stateArray.length == 1){
         this.payload['stateId'] = [this.stateArray[0]._id];
-        this.getDistrictWiseMaleFemaleCount();
+      //  this.getDistrictWiseMaleFemaleCount();
         // this.generateCharts();
       }
      

@@ -278,7 +278,7 @@ export class AdminDashboardComponent implements OnInit {
 
       if(this.stateArray.length == 1){
         this.payload['stateId'] = [this.stateArray[0]._id];
-        this.getDistrictWiseMaleFemaleCount();
+       // this.getDistrictWiseMaleFemaleCount();
         this.generateCharts();
        // this.getIncreasedPercentageRatio();
         if(this.showUserList) {
@@ -681,7 +681,7 @@ export class AdminDashboardComponent implements OnInit {
       this.getAdminDashboardSchoolReport();
       this.getTop5ResultSchoolWise();
     }
-    this.getDistrictWiseMaleFemaleCount();
+    //this.getDistrictWiseMaleFemaleCount();
 
     
   }
