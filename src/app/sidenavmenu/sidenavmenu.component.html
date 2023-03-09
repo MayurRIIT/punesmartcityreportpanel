@@ -1,0 +1,58 @@
+<div class="position-sticky">
+  <div class="row pt-3" style="padding-bottom: 0;height:80px;">
+    <div class="col-md-3 col-lg-3 text-center">
+      <!-- <img src="assets/images/clientlogo120.png" alt="..." style="width: 75%;"> -->
+      <i class="" style="font-size: 40px;color: lightgray;" class="fa fa-user-circle" aria-hidden="true"></i>
+    </div>
+    <div class="col-md-9 col-lg-9 text-left" style="padding-left:0;">
+      <h5 class="normaltextfont boldfont w3-left-align" style="font-size:16px;text-transform: capitalize;">
+      {{firstName +" "+lastName}}
+      </h5>
+      <h5 class="text-left" style="font-size:14px; ">Role : <b>{{userType}}</b></h5>
+    </div>
+  </div>
+  <hr style="margin: 0;">
+  <div class="row" style="padding-left:16px;height:40px;overflow:auto ;" *ngIf="subName && subName != ''">
+    <h5 class="text-left" style="margin-bottom: 0;padding: 10px;font-size:14px; " [innerHTML]="subName"></h5>
+  </div>
+  <hr style="margin: 0;">
+  <ul class="nav flex-column auto-scroll">
+    <li class="nav-item border-bottom" style="cursor: pointer;" *ngFor="let module of sideMenuList; let i = index;">
+      <a (click)="loadMainModule($event,module)" style="background: white;" class="nav-link {{ moduleselected == module.url ? 'sidemenu-selected' : 'sidemenu-notselected' }} {{ module.expandFlag ? 'sidemenu-selected' : 'sidemenu-notselected' }}" aria-current="page">
+        <span data-feather="home"></span>
+        <i class="{{module.thumbnail}}" aria-hidden="true"></i>&nbsp; {{module.name}}
+      </a>
+      <ul class="nav flex-column auto-scroll" style=" height: auto;" *ngIf="module.expandFlag">
+        <li class="nav-item border-bottom" style="cursor: pointer;" (click)="loadModule($event,submodule)" *ngFor="let submodule of module.children; let j = index;">
+         
+          <a style="background: white;" class="nav-link {{ moduleselected == submodule.url ? 'sidemenu-selected' : 'sidemenu-notselected' }}" aria-current="page">
+            &nbsp;&nbsp;&nbsp;&nbsp;<span data-feather="home"></span>
+            <i class="{{submodule.thumbnail}}" aria-hidden="true"></i>&nbsp; {{submodule.name}}
+          </a>          
+        </li>
+      </ul>
+    </li>
+  </ul>
+</div>
+<!-- <div class="accordion pt-3" id="accordionPanelsStayOpenExample">
+  <div class="accordion-item"  *ngFor="let module of sideMenuList; let i = index;">
+    <h2 class="accordion-header mb-0" id="panelsStayOpen-heading{{i}}">
+      <button class="accordion-button" style="padding: 5px 10px;" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{i}}" aria-expanded="true" aria-controls="panelsStayOpen-collapse{{i}}">
+        {{module.name}}
+      </button>
+    </h2>
+    <div id="panelsStayOpen-collapse{{i}}" *ngIf="module.children.length > 0" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-heading{{i}}">
+      <div class="accordion-body">
+        <ul class="nav flex-column">
+          <li class="nav-item border-bottom" *ngFor="let submodule of module.children; let j = index;"  style="cursor: pointer;">
+            <a class="nav-link" aria-current="page">
+              <span data-feather="home"></span>
+              <i class="{{submodule.thumbnail}}" aria-hidden="true"></i>&nbsp; {{submodule.name}}
+            </a>
+          </li>
+        </ul>  
+      </div>
+    </div>
+  </div>
+  
+</div> -->

@@ -1,0 +1,572 @@
+<div style="margin: 0; padding: 0">
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav
+        id="sidebarMenu"
+        class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse"
+      >
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 auto-scroll">
+        <ng-template #createMedia let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title heading" id="modal-basic-title">
+              Create a new Media
+            </h4>
+            <button
+              type="button"
+              class="close"
+              aria-label="Close"
+              (click)="modal.dismiss('Cross click')"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputTitle" class="form-label fw-bold"
+                  >Enter Title</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Title here"
+                  [(ngModel)]="title"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputDescription" class="form-label fw-bold"
+                  >Enter Description</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Description here"
+                  [(ngModel)]="description"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputOrder" class="form-label fw-bold"
+                  >Enter Order</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  min="0"
+                  placeholder="Enter Order here"
+                  [(ngModel)]="order"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputThumbnail" class="form-label fw-bold"
+                  >Enter Thumbnail</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Thumbnail here"
+                  [(ngModel)]="thumbnail"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputType" class="form-label fw-bold"
+                  >Select Media Type</label
+                >
+                <select
+                  [(ngModel)]="mediaType"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="form-select"
+                >
+                  <option value="VIDEO" selected>VIDEO</option>
+                  <option value="PDF" selected>PDF</option>
+                  <!-- <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option> -->
+                </select>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputMediaURL" class="form-label fw-bold"
+                  >Enter Media Url</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Media Url"
+                  [(ngModel)]="mediaURL"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label
+                  for="exampleInputStudyMaterialURL"
+                  class="form-label fw-bold"
+                  >Enter Study Material Url</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Study Material Url"
+                  [(ngModel)]="studyMaterialURL"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputVideoURL" class="form-label fw-bold"
+                  >Upload Test file</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  placeholder="Enter Test Id"
+                  (change)="onUpload($event)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              [disabled]="
+                title == '' ||
+                description == '' ||
+                order == null ||
+                thumbnail == '' ||
+                mediaURL == ''
+              "
+              class="btn btn-outline-dark"
+              (click)="addMedia()"
+            >
+              Add
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #editMediaObject let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title heading" id="modal-basic-title">
+              Edit Media
+            </h4>
+            <button
+              type="button"
+              class="close"
+              aria-label="Close"
+              (click)="modal.dismiss('Cross click')"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputTitle" class="form-label fw-bold"
+                  >Enter Title</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Title here"
+                  [(ngModel)]="title"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputDescription" class="form-label fw-bold"
+                  >Enter Description</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Description here"
+                  [(ngModel)]="description"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputOrder" class="form-label fw-bold"
+                  >Enter Order</label
+                >
+                <input
+                  type="number"
+                  class="form-control"
+                  min="0"
+                  placeholder="Enter Order here"
+                  [(ngModel)]="order"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold"
+                  >Enter Thumbnail</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Thumbnail here"
+                  [(ngModel)]="thumbnail"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputType" class="form-label fw-bold"
+                  >Select Media Type</label
+                >
+                <select
+                  [(ngModel)]="mediaType"
+                  [ngModelOptions]="{ standalone: true }"
+                  class="form-select"
+                >
+                  <option value="VIDEO" selected>VIDEO</option>
+                  <option value="PDF" selected>PDF</option>
+                  <!-- <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option> -->
+                </select>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputMediaURL" class="form-label fw-bold"
+                  >Enter Media Url</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Media Url"
+                  [(ngModel)]="mediaURL"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label
+                  for="exampleInputStudyMaterialURL"
+                  class="form-label fw-bold"
+                  >Enter Study Material Url</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Enter Study Material Url"
+                  [(ngModel)]="studyMaterialURL"
+                  [ngModelOptions]="{ standalone: true }"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputVideoURL" class="form-label fw-bold"
+                  >Upload Test File</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  placeholder="Enter Test Id"
+                  (change)="onUpload($event)"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              [disabled]="
+                title == '' ||
+                description == '' ||
+                order == null ||
+                thumbnail == '' ||
+                mediaURL == ''
+              "
+              class="btn btn-outline-dark"
+              (click)="updateMedia()"
+            >
+              Update
+            </button>
+          </div>
+        </ng-template>
+        <ng-template #AddNewTest let-modal>
+          <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">Upload New Test</h4>
+            <button
+              type="button"
+              class="close"
+              aria-label="Close"
+              (click)="modal.dismiss('Cross click')"
+            >
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-4 col-lg-4 mb-4">
+                <label for="exampleInputVideoURL" class="form-label fw-bold"
+                  >Upload Test file</label
+                >
+                <input
+                  type="file"
+                  class="form-control"
+                  placeholder="Enter Test Id"
+                  (change)="onUpload($event)"
+                />
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3" style="margin-left: 40%">
+                <a
+                  type="button"
+                  class="btn btn-primary me-2"
+                  href="https://eduday-prod-images.s3.ap-south-1.amazonaws.com/Test+Explore+Section+Bulk+Upload.csv"
+                >
+                  <label for="DownloadSampleTestFile" class="form-label fw-bold"
+                    >Download sample Test file</label
+                  >
+                  <i
+                    class="fa fa-download"
+                    title="DownloadSampleTestFile"
+                    style="cursor: pointer"
+                    aria-hidden="true"
+                  ></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-outline-dark"
+              (click)="updateMedia()"
+            >
+              Add
+            </button>
+          </div>
+        </ng-template>
+
+        <div
+          *ngIf="userType != 'TEACHER'"
+          class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom"
+        >
+          <div class="row mb-2 mb-md-0">
+            <div class="col-md-4 col-lg-4 mb-3 row">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <br />
+                <button
+                  type="button"
+                  (click)="showaddTSModel(createMedia)"
+                  class="btn btn-primary me-3"
+                >
+                  Add New Media
+                </button>
+              </div>
+              <!-- <div class="col-md-12 col-lg-12 mb-3">
+                <br>
+                <button type="button" (click)="downloadMediaData()" class="btn btn-primary me-3">
+                  Download All Media Data
+                </button>          
+              </div> -->
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-12 mt-3">
+          <p class="text-theme h3">{{ sectionTitle }} Media List</p>
+          <div class="col-md-3 col-lg-3 mb-3" style="margin-left: 75%">
+            <button
+              type="button"
+              (click)="downloadMediaData()"
+              class="btn btn-primary me-3"
+            >
+              Download All Media Data
+              <i
+                class="fa fa-download"
+                title="DownloadSampleTestFile"
+                style="cursor: pointer"
+                aria-hidden="true"
+              ></i>
+            </button>
+            <br />
+            <br />
+            <input
+              type="search"
+              class="form-control"
+              placeholder="Search here"
+              (keyup)="searchMedia($event)"
+            />
+          </div>
+          <table mat-table [dataSource]="dataSource" class="w-100" matSort>
+            <ng-container matColumnDef="Sr no.">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Sr no.
+              </th>
+              <td mat-cell *matCellDef="let element; let i = index">
+                {{ i + 1 }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="title">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Title
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element?.title }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Description
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element?.description }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="order">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Order
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element?.order }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="type">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Type
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element?.type }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="mediaType">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Media Type
+              </th>
+              <td mat-cell *matCellDef="let element">
+                {{ element?.mediaType }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Status
+              </th>
+              <td mat-cell *matCellDef="let element">{{ element?.status }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th
+                mat-header-cell
+                *matHeaderCellDef
+                mat-sort-header
+                class="heading"
+              >
+                Actions
+              </th>
+              <td mat-cell *matCellDef="let element">
+                <button
+                  *ngIf="userType != 'TEACHER'"
+                  type="button"
+                  [disabled]="loading"
+                  (click)="editMedia(element, editMediaObject)"
+                  class="btn btn-secondary me-2"
+                >
+                  <i
+                    class="fa fa-edit"
+                    title="Edit Category List"
+                    style="cursor: pointer"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+                <button
+                  *ngIf="userType != 'TEACHER'"
+                  type="button"
+                  [disabled]="loading"
+                  (click)="deleteMedia(element._id)"
+                  class="btn btn-danger me-2"
+                >
+                  <i
+                    class="fa fa-trash"
+                    title="Delete Media"
+                    style="cursor: pointer"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+                <button
+                  *ngIf="
+                    userType != 'TEACHER' && element?.testStatus == 'DELETE'
+                  "
+                  type="button"
+                  [disabled]="loading"
+                  (click)="addNewTest(element, AddNewTest)"
+                  class="btn btn-secondary me-2"
+                >
+                  <i
+                    class="fa fa-plus"
+                    title="Add Test"
+                    style="cursor: pointer"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+                <button
+                  *ngIf="
+                    userType != 'TEACHER' && element?.testStatus == 'ACTIVE'
+                  "
+                  type="button"
+                  [disabled]="loading"
+                  (click)="deleteTest(element)"
+                  class="btn btn-danger me-2"
+                >
+                  <i
+                    class="fa fa-minus"
+                    title="Delete Test"
+                    style="cursor: pointer"
+                    aria-hidden="true"
+                  ></i>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+          <mat-paginator
+            [length]="dataLength"
+            [pageSizeOptions]="pageSizeOptions"
+            showFirstLastButtons
+            [pageSize]="pageSize"
+            (page)="getNext($event)"
+            aria-label="Select page"
+          >
+          </mat-paginator>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>

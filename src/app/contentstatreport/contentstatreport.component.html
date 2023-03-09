@@ -1,0 +1,130 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="row mb-2 mb-md-0">
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Class</label>
+              <select [(ngModel)]="gradeId" (change)="getSubjectList()" [ngModelOptions]="{standalone: true}" class="form-select">                
+                <option value="0" selected>All</option>
+                <option *ngFor="let grade of gradeList" [ngValue]="grade">{{grade.gradeName}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Medium</label>
+              <select [(ngModel)]="mediumId" (change)="onMediumChangeGetSubjectList($event)"  [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option>
+              </select>
+            </div> 
+                 
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Subject</label>
+              <ng-select class="custom" [(ngModel)]="subjectId" [searchable] ="true" appendTo="body">
+                <ng-option [value]="0" selected>All</ng-option>
+                <ng-option *ngFor="let subject of subjectList" [value]="subject">{{subject.name +(gradeId == 0 ? (" - Class "+subject.gradeId.gradeName) : "") +(mediumId == 0 ? " - "+subject.mediumId.name+" Medium" : "")}}</ng-option>
+              </ng-select> 
+              <!-- <select [(ngModel)]="subjectId" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let subject of subjectList" [ngValue]="subject">{{subject.name +(gradeId == 0 ? (" - Class "+subject.gradeId.gradeName) : "") +(mediumId == 0 ? " - "+subject.mediumId.name+" Medium" : "")}}
+                  </option>
+              </select> -->
+            </div> 
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Content Type</label>
+              <select [(ngModel)]="contentType" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="" selected>All</option>
+                  <option value="0">Revision Content</option>
+                  <option value="1">Animation Content</option>
+              </select>
+            </div> 
+            <div class="col-md-4 col-lg-4 mb-3">
+              <br>
+              <button type="button" [disabled]="loading"  (click)="loadDashboardData()" class="btn btn-outline-secondary me-3">
+                Load Data
+              </button>
+              <!-- <button type="button" *ngIf="dataList.length > 0" (click)="exportAsXLSX()" class="btn btn-outline-secondary">
+                Export
+              </button> -->
+            </div>
+           
+              
+          </div>
+          
+          
+        </div>
+        <!-- <div class="row">
+          <div class="col-md-3 col-lg-3 d-flex">
+              Search: &nbsp;&nbsp;
+              <input class="" type="text" [(ngModel)]="searchTerm" />
+          </div>
+        </div>   -->
+        <div class="table-responsive  mt-3" style="overflow: auto;height: 650px;">
+          <table id="ExampleTable" class="table table-striped table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <!-- <tr *ngIf="datalist.length > 0 && !loading">
+                <th scope="col" colspan="1" class="pb-3">Class :- {{(gradeData == 0 || gradeData == "0") ? 'All': ordinal_suffix_of_eng(gradeData.gradeName) }}</th>
+                <th scope="col" colspan="1" class="pb-3">Medium :- {{(mediumData == 0 || mediumData == "0") ? 'All' : mediumData.name}}</th>
+                <th scope="col" colspan="1" class="pb-3">Subject :- {{(subjectData == 0 || subjectData == "0") ? 'All' : subjectData.name}}</th>
+                <th scope="col" colspan="1" class="pb-3">Content Type :- {{(contentTypeData == 0 || contentTypeData == "0") ? 'All' : ((contentTypeData == 1 || contentTypeData == "1") ? "Animation Content" : "Revision Content") }}</th>
+                <th scope="col" colspan="6"></th>
+              </tr> -->
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">Class</th>
+                <th scope="col">Medium</th>
+                <th scope="col">Subject</th>
+                <th scope="col">Chapter</th>
+                <th scope="col">Video ({{totalVideo}})</th>
+                <th scope="col">EBook ({{totalEBook}})</th>
+                <th scope="col">Notes ({{totalNotes}})</th>
+                <th scope="col">Audio ({{totalAudio}})</th>
+                <th scope="col">Test ({{totalTest}})</th>
+                <!-- <th scope="col">Interactive Test ({{totalInteractiveTestList}})</th> -->
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr><td colspan="10" class="dataTables_empty">Loading...</td></tr>
+            </tbody>
+            <!-- <tbody *ngIf="datalist.length == 0 && !loading">
+              <tr><td colspan="10">No data</td></tr>
+            </tbody> -->
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of datalist; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{ordinal_suffix_of_eng(data.gradeId.gradeName)}}</td>
+                <td>{{data.subjectId.mediumId.name}}</td>
+                <td>{{data.subjectId.name}}</td>
+                <td>{{data.title}}</td>
+                <td class="fw-bold" [ngClass]="data.totalVideoList == 0 ? 'text-danger' : 'text-success'">{{data.totalVideoList  == 0 ? ("NO ("+data.totalVideoList+")") : ("YES ("+data.totalVideoList+")") }}</td>
+                <td class="fw-bold" [ngClass]="data.totalEbookList == 0 ? 'text-danger' : 'text-success'">{{data.totalEbookList  == 0 ? ("NO ("+data.totalEbookList+")") : ("YES ("+data.totalEbookList+")")}}</td>
+                <td class="fw-bold" [ngClass]="data.totalNoteList == 0 ? 'text-danger' : 'text-success'">{{data.totalNoteList  == 0 ? ("NO ("+data.totalNoteList+")") : ("YES ("+data.totalNoteList+")")}}</td>
+                <td class="fw-bold" [ngClass]="data.totalAudioList == 0 ? 'text-danger' : 'text-success'">{{data.totalAudioList  == 0 ? ("NO ("+data.totalAudioList+")") : ("YES ("+data.totalAudioList+")")}}</td>
+                <td class="fw-bold" [ngClass]="data.totalTestList == 0 ? 'text-danger' : 'text-success'">{{data.totalTestList  == 0 ? ("NO ("+data.totalTestList+")") : ("YES ("+data.totalTestList+")")}}</td>
+                <!-- <td>{{data.totalInteractiveTestList}}</td> -->
+              </tr>
+              <!-- <tr class="bg-secondary text-white">
+                <td class="fw-bold" colspan="5">Total</td>            
+                <td class="fw-bold">{{totalVideo}}</td>
+                <td class="fw-bold">{{totalEBook}}</td>
+                <td class="fw-bold">{{totalNotes}}</td>
+                <td class="fw-bold">{{totalAudio}}</td>
+                <td class="fw-bold">{{totalTest}}</td>
+              </tr> -->
+              
+            </tbody>
+          </table>
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>

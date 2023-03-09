@@ -1,0 +1,147 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <ng-template #updateReferralCodeModel let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Update Referral Code</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertmessage" [ngClass]="alertmessage.cssClass">{{alertmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertmessage = null" aria-hidden="true"></i></div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Enter Referral Code</label>
+                <input type="text" class="form-control" placeholder="Enter Referral Code here" [(ngModel)]="referralCode" [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>  
+            
+          </div>
+                
+          <div class="modal-footer justify-content-center">        
+            <button type="button" class="btn btn-primary" (click)="updateReferralCode()">Update</button>        
+          </div>        
+        </ng-template>
+        
+        <ng-template #bulkuploadquestion let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Bulk Upload</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <label for="exampleInputEmail1">Select File</label>
+                <input (change)="fileChange($event)" type="file" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .ods" class="form-control">
+              </div> 
+            </div>
+          </div>
+                
+          <div class="modal-footer justify-content-center">        
+            <a type="button" class="btn btn-primary" href="assets/bulkupload/MDM_bulk_referral_code_users_upload.csv" download>Download Sample File</a>        
+            <button type="button" class="btn btn-primary" (click)="saveBulkUpload()">Upload</button>        
+          </div>        
+        </ng-template>
+        
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="row mb-2 mb-md-0">
+            <div class="col-md-8 col-lg-8 mb-3">
+              <button type="button" [disabled]="loading" (click)="openBModel(bulkuploadquestion)" class="btn btn-success me-3">
+                Bulk Upload
+              </button>
+              <button type="button" *ngIf="userList.length > 0" [disabled]="loading" (click)="exportAsXLSX()" class="btn btn-secondary me-3">
+                Export 
+              </button>
+              <button type="button" *ngIf="userList.length > 0" [disabled]="loading" (click)="exportAllResult()" class="btn btn-secondary me-3">
+                Export All Results
+              </button>
+            </div>
+            
+              
+          </div> 
+          <!-- <div class="row mb-2 mb-md-0">
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Search By Mobile Number</label>
+              <input type="number" class="form-control" placeholder="Mobile Number" [(ngModel)]="mobileNumber" [ngModelOptions]="{standalone: true}">
+            </div>
+            <div class="col-md-4 col-lg-4 mb-3">
+              <br>
+              <button type="button" [disabled]="loading"  (click)="seachData()" class="btn btn-outline-secondary me-3">
+                Search Data
+              </button>
+            </div>            
+          </div>          -->
+        </div>  
+
+        <div class="table-responsive mt-3" style="overflow: auto;">
+          
+          <table id="ExampleTable" class="table table-striped table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <!-- <tr *ngIf="userList.length > 0 && !loading">
+                <th scope="col" colspan="1" class="pb-3">Class :- {{(gradeData == 0 || gradeData == "0") ? 'All': ordinal_suffix_of_eng(gradeData.gradeName) }}</th>
+                <th scope="col" colspan="1" class="pb-3">School :- {{(schoolData == 0 || schoolData == "0") ? 'All' : schoolData.schoolName }}</th>
+                <th scope="col" colspan="1" class="pb-3">Medium :- {{(mediumData == 0 || mediumData == "0") ? 'All' : mediumData.name}}</th>
+                <th scope="col" colspan="1" class="pb-3">User Type :- {{userType}}</th>
+                <th scope="col" colspan="7"></th>
+              </tr> -->
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">Sale Person Name </th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Referral Code</th>
+                <th scope="col">Registered At</th>
+                <th scope="col">Registered Users Count</th>
+                <th scope="col">Address</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr>
+                <td colspan="6">Loading...</td>
+              </tr>
+            </tbody>
+            <!-- <tbody *ngIf="userList.length == 0 && !loading">
+              <tr>
+                <td colspan="6">No data</td>
+              </tr>
+            </tbody> -->
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of userList; let i = index;">
+                <td>{{ i+1 }}</td>
+                <td>{{ data.userId?.firstName+" "+data.userId?.lastName }}</td>
+                <td>{{ data.userId?.mobileNumber }}</td>
+                <td>{{ data.referralCode }}</td>
+                <td>{{data.userId?.createdAt | date:'dd/MM/yyyy hh:mm a'}}</td>
+                <td>{{ data.referredUser ? data.referredUser.length : 0 }}</td>
+                <td style="width: 10%;">{{ (data.userId?.address ? data.userId?.address : "")+" "+(data.userId?.city ? data.userId?.city : "")+(data.userId?.district ? (" "+data.userId?.district.districtName) : "" )+" "+(data.userId?.pincode ? data.userId?.pincode : "") }}</td>
+                <td>
+                  <button  title="Change/Update Referral Code"  type="button" class="btn btn-warning me-2" (click)="changeReferralCode(i,data,updateReferralCodeModel)"><i class="fa fa-pencil" style="cursor: pointer;" aria-hidden="true"></i></button>
+                  <button  type="button" [disabled]="loading" (click)="deleteReferralCode(data._id,i)" class="btn btn-danger me-2">
+                    <i class="fa fa-trash" title="Delete Referral Code" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" [disabled]="loading" (click)="activateReferralCode(data,i)" class="btn {{ data.status == 'ACTIVE' ? 'btn-danger' : 'btn-success' }} me-2">
+                    <i *ngIf="data.status != 'ACTIVE'" class="fa fa-check-square-o" title="Activate Referral Code" style="cursor: pointer;" aria-hidden="true"></i>
+                    <i *ngIf="data.status == 'ACTIVE'"  class="fa fa-window-close-o"  title="Deactivate Referral Code" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+          
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>

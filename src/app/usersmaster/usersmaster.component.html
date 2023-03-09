@@ -1,0 +1,228 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom" style="display: flex;">
+            <h2 style="margin-bottom: 0;">{{moduleselected}}</h2>
+            <button type="button" style="float: right;" (click)="addUser(adduser)" class="btn btn-outline-secondary me-3"> 
+              Add User
+            </button>
+        </div>
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="row mb-2 mb-md-0">
+              
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputEmail1">Select Role</label>
+                <select [(ngModel)]="roleId" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="0" disabled selected>Select Role</option>
+                  <option *ngFor="let role of rolelist" [ngValue]="role">{{role.name}}
+                  </option>
+                </select>
+              </div>
+              <!-- <div class="col-md-3  mb-3" *ngIf="roleId.name == 'TEACHER' || roleId.name == 'PRINCIPAL' || roleId.name == 'SCHOOL'">
+                <label for="exampleInputEmail1">Select School&nbsp;<b class="text-danger">*</b></label>
+                <select [(ngModel)]="schoolIdF" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let school of schoolList" [ngValue]="school">{{school.schoolName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3  mb-3" *ngIf="roleId.name == 'SPONSOR'">
+                <label for="exampleInputEmail1">Select Sponsor&nbsp;<b class="text-danger">*</b></label>
+                <ng-select class="custom" [(ngModel)]="sponsorIdF" [searchable] ="true" appendTo="body">
+                  <ng-option [value]="0" selected>All</ng-option>
+                  <ng-option *ngFor="let sponsor of sponsorList" [value]="sponsor">{{sponsor.name}}</ng-option>
+                </ng-select> 
+              </div> -->
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputEmail1">Select Date Range</label>
+                <select [(ngModel)]="viewtype" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option [value]="0" selected>All</option>
+                  <option [value]="1">Custom Date</option>
+                </select>
+              </div> 
+              
+              <div class="col-md-6 col-lg-6 mb-3 row">
+                  
+                <div *ngIf="viewtype == 1" class="col-md-4 col-lg-4 mb-3">
+                  <label for="exampleInputEmail1">From</label>
+                  <input class="form-control" [(ngModel)]="selectfromdate" [ngModelOptions]="{standalone: true}" type="date">
+                </div>
+                <div  *ngIf="viewtype == 1" class="col-md-4 col-lg-4 mb-3">
+                  <label for="exampleInputEmail1">To</label>
+                  <input class="form-control" [(ngModel)]="selecttodate" [ngModelOptions]="{standalone: true}" type="date">
+                </div>
+                <div class="col-md-4 col-lg-4 mb-3">
+                  <br>
+                  <button type="button" [disabled]="loading"  (click)="loadDashboardData()" class="btn btn-outline-secondary me-3">
+                    Load Data
+                  </button>
+                  <!-- <button type="button" *ngIf="dataList.length > 0" (click)="exportAsXLSX()" class="btn btn-outline-secondary">
+                    Export
+                  </button> -->
+                </div>
+              </div>
+              
+          </div>
+        </div>
+
+        <ng-template #adduser let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Add User</h4>
+            <button type="button" class="close" aria-label="Close" (click)="closeModel()">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+           
+
+            <div class="row mb-2 mb-md-0">
+              <!-- <div class="col-md-3  mb-3">
+                <label for="exampleInputEmail1">Select School</label>
+                <select [(ngModel)]="schoolId" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let school of schoolList" [ngValue]="school">{{school.schoolName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3  mb-3">
+                <label for="exampleInputEmail1">Select Class</label>
+                <select [(ngModel)]="gradeId" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select Class</option>
+                  <option *ngFor="let grade of gradeList" [ngValue]="grade">{{grade.gradeName}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1">Select Medium</label>
+                <select [(ngModel)]="mediumId" (change)="onMediumChangeGetSubjectList($event)"
+                  [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select Medium</option>
+                  <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option>
+                </select>
+              </div> -->
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1">Select Role&nbsp;<b class="text-danger">*</b></label>
+                <select [(ngModel)]="roleIdForm" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select Role</option>
+                  <option [disabled]="role.name == 'TEACHER'" *ngFor="let role of rolelist" [ngValue]="role">{{role.name}}</option>
+                </select>
+              </div>
+              <div class="col-md-3  mb-3" *ngIf="roleIdForm.name == 'PRINCIPAL' || roleIdForm.name == 'SCHOOL'">
+                <label for="exampleInputEmail1">Select School&nbsp;<b class="text-danger">*</b></label>
+                <select [(ngModel)]="schoolId" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select School</option>
+                  <option *ngFor="let school of schoolList" [ngValue]="school">{{school.schoolName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3  mb-3" *ngIf="roleIdForm.name == 'SPONSOR'">
+                <label for="exampleInputEmail1">Select Sponsor&nbsp;<b class="text-danger">*</b></label>
+                <ng-select class="custom" [(ngModel)]="sponsorId" [searchable] ="true" appendTo="body">
+                  <ng-option [value]="0" selected disabled>Select Sponsor</ng-option>
+                  <ng-option *ngFor="let sponsor of sponsorList" [value]="sponsor">{{sponsor.name}}</ng-option>
+                </ng-select> 
+              </div>
+              <div class="col-md-3  mb-3" *ngIf="roleIdForm.name == 'DISTRICTADMIN'">
+                <label for="exampleInputEmail1">Select District&nbsp;<b class="text-danger">*</b></label>
+                <ng-select class="custom" [(ngModel)]="districtId" [searchable] ="true" appendTo="body">
+                  <ng-option [value]="0" selected disabled>Select district</ng-option>
+                  <ng-option *ngFor="let districtdata of districtList" [value]="districtdata._id">{{districtdata.districtName}}</ng-option>
+                </ng-select> 
+              </div>
+           
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">First Name&nbsp;<b class="text-danger">*</b></label>
+                <input type="text" class="form-control" placeholder="First Name" [(ngModel)]="firstName"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Last Name&nbsp;<b class="text-danger">*</b></label>
+                <input type="text" class="form-control" placeholder="Last Name" [(ngModel)]="lastName"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Mobile Number&nbsp;<b class="text-danger">*</b></label>
+                <input type="number" class="form-control" (change)="onChangeMobileNo()" placeholder="Mobile" max="10" [(ngModel)]="mobileNumber"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Email&nbsp;<b class="text-danger">*</b></label>
+                <input type="email" class="form-control" (change)="onChangeEmail()" placeholder="Email" [(ngModel)]="email"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Password&nbsp;<b class="text-danger">*</b></label>
+                <input type="text" class="form-control" placeholder="Password" [(ngModel)]="password"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+            </div>
+
+          </div>
+                
+          <div class="modal-footer justify-content-center">        
+            <button type="button" class="btn btn-primary" (click)="saveUser()">Add</button>        
+          </div>        
+        </ng-template>
+        
+        <div class="table-responsive  mt-3" style="overflow: auto;height: 650px;">
+          <table id="ExampleTable" class="table table-striped table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Email</th>
+                <th scope="col" *ngIf="roleId.name == 'PRINCIPAL' || roleId.name == 'SCHOOL' || roleId.name == 'TEACHER'" >School</th>
+                <th scope="col" *ngIf="roleId.name == 'SPONSOR'" >Sponsor Info</th>
+                <th scope="col">User Type</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr><td colspan="5" class="dataTables_empty">Loading...</td></tr>
+            </tbody>
+           
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of datalist; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{data?.firstName+" "+data?.lastName}}</td>
+                <td>{{data?.mobileNumber}}</td>
+                <td>{{data?.email}}</td>
+                <td *ngIf="roleId.name == 'PRINCIPAL' || roleId.name == 'SCHOOL' || roleId.name == 'TEACHER'">{{data?.schoolId ? data?.schoolId?.schoolName+" "+data?.schoolId?.address : "-"}}</td>
+                <td *ngIf="roleId.name == 'SPONSOR'">{{data?.sponsorId ? data?.sponsorId?.name: "-"}}</td>
+
+                <td>{{data?.userType}}</td>
+                <td>{{data.createdAt | date:'dd/MM/yyyy hh:mm a'}}</td>
+                <td>
+                  <button type="button" [disabled]="loading" (click)="deleteUser(data._id,i)" class="btn btn-danger me-3">
+                    <i class="fa fa-trash" title="Delete user" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <!-- <button type="button" [disabled]="loading" (click)="editUser(data._id,i)" class="btn btn-secondary me-3">
+                    <i class="fa fa-pencil" title="Edit user" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button> -->
+
+                  <button type="button" [disabled]="loading" (click)="activateUser(data,i)" class="btn {{ data.status == 'ACTIVE' ? 'btn-danger' : 'btn-success' }} me-3">
+                    <i *ngIf="data.status != 'ACTIVE'" class="fa fa-check-square-o" title="Activate user" style="cursor: pointer;" aria-hidden="true"></i>
+                    <i *ngIf="data.status == 'ACTIVE'"  class="fa fa-window-close-o"  title="Deactivate user" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                </td>
+              </tr>
+            
+              
+            </tbody>
+          </table>
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>

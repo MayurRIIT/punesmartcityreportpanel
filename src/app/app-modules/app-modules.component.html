@@ -1,0 +1,54 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <div class="row pt-3" style="padding-bottom: 0;height:auto;">
+          <div class="col-md-3 col-lg-3  text-center">
+            <!-- <img src="assets/images/clientlogo120.png" alt="..." style="width: 75%;"> -->
+            <i class="" style="font-size: 40px;color: lightgray;" class="fa fa-user-circle" aria-hidden="true"></i>
+          </div>
+          <div class="col-md-9 col-lg-9 text-left" style="padding-left:0;">
+            <h5 class="normaltextfont boldfont w3-left-align" style="font-size:16px;text-transform: capitalize;">
+            {{firstName +" "+lastName}}
+            </h5>
+            <h5 class="text-left" style="font-size:14px; ">Role : <b>{{userType}}</b></h5>
+          </div>
+        </div>
+        <hr style="margin: 0;">
+      </nav>
+      <main class="col-md-9 ms-sm-auto col-lg-10">
+
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2">
+         
+          <div style="height: 100%" class="row px-2 py-2 mb-md-0">
+            <div class="col-md-3 col-lg-3 mb-2" *ngFor="let module of sideMenuList; let i = index;">
+              <div class="card ">
+                <i class="card-img-top card-image" class="{{module.thumbnail}}" aria-hidden="true"></i>
+                <div class="card-body">
+                  <h5 class="card-title">{{module.name}}</h5>
+                  <p class="card-text lightshadedcolor">{{module.children.length}} Modules</p>
+                  <button class="btn btn-primary" (click)="loadModule($event,module)">Get Started</button>
+                  <!-- <ul class="" *ngIf="module.children && module.children.length > 0" style="padding-left: 20px;list-style: none;height: auto;">
+                    <li class="submodule-list mb-2" (click)="loadModule($event,submodule)" *ngFor="let submodule of module.children; let j = index;">
+                      <i class="{{submodule.thumbnail}}" aria-hidden="true"></i>&nbsp; {{submodule.name}}
+                    </li>
+                  </ul> -->
+                </div>
+              </div>
+            </div>
+            <!-- <div class="col-md-3 col-lg-3 mb-3" *ngFor="let module of sideMenuList; let i = index;">
+              <i class="{{module.thumbnail}}" aria-hidden="true"></i>&nbsp; {{module.name}}
+
+              
+            </div> -->
+
+
+
+          </div>
+        </div>    
+      </main>
+    </div>
+  </div>
+</div>        

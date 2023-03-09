@@ -1,0 +1,356 @@
+<div class="container-fluid overflow-auto" style="height: 100%;position: absolute;display: inline-block;background-color: #f3f3f4;">
+  <div class="row" style="height:80px">
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>State</mat-label>
+        <mat-select multiple [(ngModel)]="payload.stateId" (selectionChange)="selectChange('stateId',$event.value)">
+          <mat-option *ngFor="let state of stateArray" [value]="state._id">
+            {{state.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" *ngIf="gradeArray?.length > 0" class="w-100">
+        <mat-label>District</mat-label>
+        <mat-select multiple [(ngModel)]="payload.districtId" (selectionChange)="selectChange('districtId',$event.value)">
+          <mat-option *ngFor="let district of districtArray" [value]="district._id">
+            {{district.districtName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="col-sm-2 pt-3 mt-1" *ngIf="showSchool">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Schools</mat-label>
+        <mat-select multiple [(ngModel)]="payload.schoolId" (selectionChange)="selectChange('schoolId',$event.value)">
+          <mat-option *ngFor="let school of schoolArray" [value]="school._id">
+            {{school?.schoolName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Gender</mat-label>
+        <mat-select multiple [(ngModel)]="payload.gender" (selectionChange)="selectChange('gender',$event.value)">
+          <mat-option *ngFor="let gender of genderArray" [value]="gender">
+            {{gender}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Medium</mat-label>
+        <mat-select multiple [(ngModel)]="payload.mediumId" (selectionChange)="selectChange('mediumId',$event.value)">
+          <mat-option *ngFor="let medium of mediumArray" [value]="medium._id">
+            {{medium.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- <div class="col-sm-4 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChange()">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div> -->
+  </div>
+  <div class="row" id="printPanel" style="height: calc( 100% - 80px);overflow: auto;">
+      <div class="row">
+        <div class=" col-lg-12 col-sm-12" *ngIf="showGMap"  [hidden]='markers.length == 0'>
+            <google-map height="500px" width="100%" [options]="options">
+                  <map-marker
+                    #somemarker="mapMarker"
+                    *ngFor="let marker of markers"
+                    [position]="marker.position"
+                    [label]="marker.label"
+                    [title]="marker.title"
+                    [options]="marker.options"
+                    (mapClick)="openMarkerInfo(somemarker,marker.info)"
+                    >
+                  </map-marker>
+                  <map-info-window>{{ infoContent }}</map-info-window>
+            </google-map>
+        <!-- <button (click)="zoomIn()">Zoom in</button>
+          <button (click)="zoomOut()">Zoom out</button> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-sm-12 mt-3">
+          <div class="row">
+            <div class="col-sm-3 mb-3">
+              <div class="bg-purple rounded box-shadow">
+                <h2 style="font-weight: 500;"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Total Users</h2>  
+                <p class="h3 mb-0">{{ userListLength == -1 ? "Loading" : userListLength }}</p>
+                <!-- <hr style="background-color: white;">
+                <span>Better than last year (100%)</span> -->
+              </div>          
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row" *ngIf="increaseCriteriaPercentage.length > 0">
+        <div class="col-lg-12 col-sm-12 mt-3">
+          <p class="h3" style="padding: 12px 0px;margin-bottom: 0;">Enrollments (Last year Vs Current Year)</p>
+          <div class="row">
+            <div class="col-lg-3 col-sm-3 mb-3" *ngFor="let increaseCriteria of increaseCriteriaPercentage">
+              <div class="bg-purple rounded box-shadow">
+                <h2 style="font-weight: 500;">{{ increaseCriteria.name }}</h2>  
+                <p class="h3 mb-0"><i class="fa {{increaseCriteria.arrow}}" aria-hidden="true"></i>&nbsp; {{ increaseCriteria.increasedPercentage }}%</p>
+              </div>  
+            </div> 
+          </div>
+        </div>
+      </div> -->
+      <div class="row">  
+        <div class="col-lg-12 col-sm-12 mb-3 mt-3">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4">
+              <div [chart]="mediumChart" class="shadow"></div>
+            </div>
+            <div class="col-lg-4 col-sm-4">
+              <div [chart]="roleChart" class="shadow"></div>
+            </div>
+            <div class="col-lg-4 col-sm-4">
+              <div [chart]="genderChart" class="shadow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="onboardingChart">  
+        <div class=" col-lg-12 col-sm-12">
+          <!-- onboarding -->
+          <!-- <div class="row">
+            <div class="col-sm-8">
+              <p>Onboarding Trend</p>
+            </div>  
+            <div class="col-sm-8">
+              <mat-select multiple [(ngModel)]="payload.schoolId" (selectionChange)="selectChange('schoolId',$event.value)">
+                <mat-option *ngFor="let school of schoolArray" [value]="school._id">
+                  {{school?.schoolName}}
+                </mat-option>
+              </mat-select>
+            </div>
+          </div> -->
+          <div [chart]="onboardingChart" class="shadow"></div>
+        </div>
+      </div>
+      <div class="row" *ngIf="avgComponentChart">  
+        <div class=" col-lg-12 col-sm-12" style="padding: 10px;">
+          <!-- onboarding -->
+          <div class="internalloader" *ngIf="gradewiseStudentCountLoader"></div>
+          <p style="padding: 10px;" *ngIf="gradewiseStudentCountLoader">Loading grade wise gender data...</p>
+          <div [chart]="avgComponentChart" class="shadow"></div>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="avgGradeRoleComponentChart">  
+        <div class=" col-lg-12 col-sm-12" style="padding: 10px;">
+          <!-- onboarding -->
+          <div class="internalloader" *ngIf="gradewiseRoleStudentCountLoader"></div>
+          <p style="padding: 10px;" *ngIf="gradewiseRoleStudentCountLoader">Loading grade wise role data...</p>
+          <div [chart]="avgGradeRoleComponentChart" class="shadow"></div>
+        </div>
+      </div>
+      <div class="row"  *ngIf="avgGradeRoleComponentChart">  
+        <div class=" col-lg-12 col-sm-12" style="padding: 10px;">
+          <!-- onboarding -->
+          <div class="internalloader" *ngIf="gradewiseMediumStudentCountLoader"></div>
+          <p style="padding: 10px;" *ngIf="gradewiseMediumStudentCountLoader">Loading grade wise medium data...</p>
+          <div [chart]="avgGradeMediumComponentChart" class="shadow"></div>
+        </div>
+      </div>
+
+      <div class="row"  *ngIf="showSchoolResult">  
+        <div *ngFor="let tp5data of top5Gender" class=" col-lg-3 col-sm-3" style="padding: 10px;">
+          <div class="shadow" style="border:1px solid #dee2e6;">
+            <p class="text-theme {{tp5data.className}}">{{tp5data.title}}</p>
+            <table class="table table-bordered" style="background-color: white;color: #75868f; margin-bottom: 0;">
+              <!-- <thead>
+                <th scope="col"><h5 style="margin-bottom: 0;">School name</h5></th>
+                <th scope="col"><h5 style="margin-bottom: 0;">Count</h5></th>
+              </thead> -->
+              <tbody>
+                <tr  style="font-size: 13px;" *ngFor="let school of tp5data.data">
+                  <td>
+                    {{school.schoolIdInfo ? ( school?.schoolIdInfo.length > 0 ? school?.schoolIdInfo[0].schoolName : "-") : school.schoolName }}
+                  </td>
+                  <td>
+                    {{school.size }}
+                  </td>
+                </tr>
+                <tr style="background-color: #9e9e9e26;" *ngFor="let n of numSequence(tp5data.missingRow);let i = index;">
+                  <td>
+                   <span style="visibility: hidden;"> dummny</span>
+                  </td>
+                  <td>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row" *ngIf="showUserList">  
+        <div class="col-lg-12 col-sm-12 mt-3 mb-3">
+          <!-- userlist -->
+          <p class="text-theme h3">Learning Users</p>
+          <table mat-table [dataSource]="dataSourceUL" class="w-100" matSort>
+    
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name of Learner </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{ element.firstName + ' ' + element.lastName}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="medium">
+              <th mat-header-cell *matHeaderCellDef> Medium </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.mediumId?.name}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="gender">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.gender}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="schoolName">
+              <th mat-header-cell *matHeaderCellDef> School Name </th>
+              <td mat-cell *matCellDef="let element" class="white-text">
+                {{element?.schoolId?.schoolName}} &nbsp;&nbsp; &nbsp;
+              </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="userType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.userType}}</td>
+            </ng-container>
+    
+            <ng-container matColumnDef="grade">
+              <th mat-header-cell *matHeaderCellDef class="text-center">Grade (Class)</th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text">
+                &nbsp;{{element.gradeId?.gradeName}} &nbsp;
+              </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="learningCompletionPercentage">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Learning Completion </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.overallCompletionPercentage}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="audioProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Audio Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.audioPercentage}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="ebookProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Book Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.ebookPercentage}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="notesProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Notes Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.notePercentage}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="testsProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Test Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.testPercentage}} </td>
+            </ng-container>
+    
+            <ng-container matColumnDef="videoProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Video Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.videoPercentage}} </td>
+            </ng-container>
+    
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsUL"></tr>
+            <tr mat-row [ngClass]="row.bgcolor" *matRowDef="let row; columns: displayedColumnsUL;"></tr>
+          </table>
+    
+          <mat-paginator [length]="dataLengthUL" [pageSizeOptions]="pageSizeOptionsUL" showFirstLastButtons
+            [pageSize]="pageSizeUL" (page)="getStudentNext($event)" aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+
+      <!-- schoollist -->
+
+      <div class="row" *ngIf="showSchoolResult">  
+        <div class="col-lg-12 col-sm-12 mt-3 mb-3" style="background: white;">
+          <p class="h3" style="padding: 12px 8px;margin-bottom: 0;">Schools</p>
+          <hr style="margin-top: 0;margin-bottom: 0;">
+          <table mat-table [dataSource]="dataSource" class="w-100" matSort>
+
+            <ng-container matColumnDef="schoolName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name of School </th>
+              <td mat-cell *matCellDef="let element" class=""> {{ element?.schoolId ? element?.schoolId?.schoolName : element?.schoolName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolCode">
+              <th mat-header-cell *matHeaderCellDef> School Code(UDISE) </th>
+              <td mat-cell *matCellDef="let element" class=""> {{element?.schoolId ? element?.schoolId?.schoolCode : element?.schoolCode}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolMedium">
+              <th mat-header-cell *matHeaderCellDef> Medium </th>
+              <td mat-cell *matCellDef="let element" class=""> {{element?.schoolId ? element?.mediumId?.name : 'All'}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="center">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Center </th>
+              <td mat-cell *matCellDef="let element" class=""> {{element?.schoolId ? element?.schoolId?.center : element.center}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="taluka">
+              <th mat-header-cell *matHeaderCellDef> Taluka </th>
+              <td mat-cell *matCellDef="let element" class=""> {{element?.schoolId ? element?.schoolId?.taluka : element.taluka}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolManagement">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> School Management </th>
+              <td mat-cell *matCellDef="let element" class=""> {{element?.schoolId ? element?.schoolId?.schoolManagement : element?.schoolManagement}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolType">
+              <th mat-header-cell *matHeaderCellDef class="text-center">School Type</th>
+              <td mat-cell *matCellDef="let element" class="text-center "> {{element?.schoolId ? element?.schoolId?.schoolType : element?.schoolType}}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="usersCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Users count </th>
+              <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.userIds ? element?.userIds.length : 0}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="maleCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Male Count </th>
+              <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.maleUserIds ? element?.maleUserIds.length : 0}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="femaleCount">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Female Count </th>
+              <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.femaleUserIds ? element?.femaleUserIds.length : 0}} </td>
+            </ng-container>
+
+          
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+
+          <mat-paginator [length]="dataLength" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons
+            [pageSize]="pageSize" (page)="getNext($event)" aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+      <div class="loader" *ngIf="loader"></div>
+  </div>  
+</div>

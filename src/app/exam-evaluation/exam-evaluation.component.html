@@ -1,0 +1,159 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <div class="col-md-9 col-lg-10 pt-3">
+        <section class="container-fluid page-wrapper" style="padding-bottom: 10px;">
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="h2 text-primary">Exam Evaluation</p>
+            </div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3  mb-3">
+                <label for="exampleInputEmail1">Select School</label>
+                <select [(ngModel)]="schoolId" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let school of schoolList" [ngValue]="school">{{school.schoolName}}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-3  mb-3">
+                <label for="exampleInputEmail1">Select Class</label>
+                <select [(ngModel)]="gradeId" [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select Class</option>
+                  <option *ngFor="let grade of gradeList" [ngValue]="grade">{{grade.gradeName}}
+                  </option>
+                </select>
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1">Select Medium</label>
+                <select [(ngModel)]="mediumId" (change)="onMediumChangeGetSubjectList($event)"
+                  [ngModelOptions]="{standalone: true}" class="form-select">
+                  <option value="0" selected disabled>Select Medium</option>
+                  <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option>
+                </select>
+              </div>
+
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1">Select Subject</label>
+                <ng-select class="custom" [(ngModel)]="subjectId" [searchable]="true"
+                  appendTo="body">
+                  <ng-option [value]="0" selected disabled>Select Subject</ng-option>
+                  <ng-option *ngFor="let subject of subjectList" [value]="subject">
+                    {{subject.name +(gradeId == 0 ? (" - Class "+subject.gradeId.gradeName) : "") +(mediumId == 0 ? " - "+subject.mediumId.name+" Medium" : "")}}
+                  </ng-option>
+                </ng-select>
+              </div>
+            </div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Exam Title</label>
+                <input type="text" class="form-control" placeholder="Title" [(ngModel)]="examTitle"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label">Question Count</label>
+                <input type="number" class="form-control" placeholder="Count" [(ngModel)]="questionCount"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-3">
+                <label class="form-label">Description</label>
+                <input type="text" class="form-control" placeholder="Description" [(ngModel)]="description"
+                  [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 mb-2 mt-4 pt-2 text-right">
+                <!-- <label for="exampleInputEmail1">Choose File</label> -->
+                <input type="file" id="file" (change)="handleFileInput($event.target)">
+              </div>
+            </div>
+            <div class="row">
+
+              <div class="col-md-4 mb-3">
+                <br>
+                <button type="button" (click)="saveExam()" class="btn btn-outline-secondary me-3">
+                  Save
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+
+              <p class="text-primary h3">Exam List</p>
+              <table mat-table [dataSource]="dataSource" class="w-100" matSort>
+
+                <ng-container matColumnDef="title">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Exam Title </th>
+                  <td mat-cell *matCellDef="let element"> {{element.title}}</td>
+                </ng-container>
+
+                <ng-container matColumnDef="schoolName">
+                  <th mat-header-cell *matHeaderCellDef> School Name </th>
+                  <td mat-cell *matCellDef="let element"> {{element?.schoolId?.schoolName}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef> Medium </th>
+                  <td mat-cell *matCellDef="let element"> {{element.mediumId?.name}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="gradeName">
+                  <th mat-header-cell *matHeaderCellDef> Class </th>
+                  <td mat-cell *matCellDef="let element"> {{element.gradeId?.gradeName}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef> Description </th>
+                  <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+
+
+                <ng-container matColumnDef="createdAt">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Created On </th>
+                  <td mat-cell *matCellDef="let element"> {{element.createdAt |  date:'short'}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="fileName">
+                  <th mat-header-cell *matHeaderCellDef> Actions </th>
+                  <td mat-cell *matCellDef="let element" class="">
+                    <a [href]="element.fileName" target="_blank" class="mr-2">
+                      <mat-icon color="primary" class="icon-lg cursor-pointer">remove_red_eye</mat-icon>
+                      
+                    </a>
+                    <!-- &nbsp;
+                    <a class="pl-2" (click)="openDialog(element)">
+                      <mat-icon color="primary" class="icon-lg cursor-pointer">edit</mat-icon>
+                    </a> -->
+                  
+                    &nbsp;
+                    &nbsp;
+                    <a mat-flat-button color="primary" [routerLink]="['../view-exam-response',element?._id]">
+                      View Result
+                    </a>
+                  </td>
+
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+              </table>
+
+              <mat-paginator [pageSizeOptions]="[10, 50, 100]" showFirstLastButtons [pageSize]="20"
+                aria-label="Select page of periodic elements">
+              </mat-paginator>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+  </div>
+</div>

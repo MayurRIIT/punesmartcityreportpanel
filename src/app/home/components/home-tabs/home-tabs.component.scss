@@ -1,0 +1,9 @@
+.nav-link {
+  font-weight: 500;
+  color: #6c757d;
+
+  &.active {
+    color: #0d6efd;
+    border-bottom: 3px solid #0d6efd;
+  }
+}

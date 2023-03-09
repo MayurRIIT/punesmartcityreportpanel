@@ -1,0 +1,652 @@
+<div style="margin: 0;padding: 0;">
+
+  
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <ng-template #createacompetitions let-modal>
+          <div *ngIf="alertCCmessage" [ngClass]="alertCCmessage.cssClass">{{alertCCmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertCCmessage = null" aria-hidden="true"></i></div>
+
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">{{competitionModelHeader}}</h4>
+            <button type="button" class="close" aria-label="Close" (click)="resetForm();competitionData = null;competitionIndex = -1;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="row mb-2 mb-md-0" *ngIf="competitionData == null">
+              <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Auto fill Data from previous competition</label>
+                  <select [(ngModel)]="competitionIdForm" (change)="setCompetitionDataOnForm()" [ngModelOptions]="{standalone: true}" class="form-select">                
+                    <option value="0" selected disabled>Select competition</option>
+                    <option *ngFor="let competition of competitionList" [ngValue]="competition">{{competition.name}}</option>
+                  </select>
+              </div>    
+              <div class="col-md-3 col-lg-3 mb-3">
+                <button type="button" class="btn btn-warning mt-3" aria-label="Close" (click)="resetForm();">
+                  RESET FORM
+                </button>
+            </div>    
+            </div>
+            <div class="row mb-2 mb-md-0">
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Select Class<span class="text-danger">*</span></label>
+                  <select [(ngModel)]="gradeId" [ngModelOptions]="{standalone: true}" class="form-select" multiple>                
+                    <option value="0" selected disabled>Select Class</option>
+                    <option *ngFor="let grade of gradeList" [ngValue]="grade._id">{{grade.gradeName}}
+                    </option>
+                  </select>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Select Medium<span class="text-danger">*</span></label>
+                  <select [(ngModel)]="mediumId" [ngModelOptions]="{standalone: true}" class="form-select" multiple>                
+                    <option value="0" selected disabled>Select Medium</option>
+                    <option *ngFor="let medium of mediumsList" [ngValue]="medium._id">{{medium.name}}</option>
+                  </select>
+                </div>
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Select sponsor</label>
+                  <select [(ngModel)]="sponsorId" [ngModelOptions]="{standalone: true}" class="form-select">                
+                      <option value="0" selected>Select sponsor</option>
+                      <option *ngFor="let sponsor of sponsorList" [ngValue]="sponsor._id">{{sponsor.name}}</option>
+                  </select>
+                </div> 
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Enter Name<span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" placeholder="Enter name here" [(ngModel)]="competitionName" [ngModelOptions]="{standalone: true}">
+                </div>
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Enter Competition Description<span class="text-danger">*</span></label>
+                  <textarea class="form-control" placeholder="Enter description here" [(ngModel)]="competitionDescription" [ngModelOptions]="{standalone: true}"></textarea>
+                </div>             
+            
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Thumbnail<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter thumbnail here" required [(ngModel)]="thumbnail" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Start Date<span class="text-danger">*</span></label>
+                <input type="date" class="form-control" placeholder="Enter start date here" required [(ngModel)]="startDate" [ngModelOptions]="{standalone: true}">
+                <!-- <div class="input-group">    
+                  <input class="form-control" placeholder="yyyy-mm-dd" name="dp" [(ngModel)]="startTime" ngbDatepicker #d="ngbDatepicker">
+                  <div class="input-group-append">
+                    <button class="btn btn-outline-secondary calendar" (click)="d.toggle()" type="button">📅</button>
+                  </div>              
+                </div> -->
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Start Time<span class="text-danger">*</span></label>
+                <input type="time" class="form-control" placeholder="Enter start time here" required [(ngModel)]="startTime" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Duration( in Min)<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" placeholder="Enter Dduration here" required [(ngModel)]="duration" [ngModelOptions]="{standalone: true}">
+              </div>
+            
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Positive marks<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" placeholder="Enter positive marks here" required [(ngModel)]="positiveMarks" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Negative marks<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" placeholder="Enter negative marks here" required [(ngModel)]="negativeMarks" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Banner Image(Before Test Start)<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter image url here" required [(ngModel)]="bannerBeforeStart" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Flashscreen Image<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter image url here" required [(ngModel)]="flashscreenImage" [ngModelOptions]="{standalone: true}">
+              </div>
+            
+              
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Banner Image(After Test Submit)<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter image url here" required [(ngModel)]="bannerAfterSubmit" [ngModelOptions]="{standalone: true}">
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Message<span class="text-danger">*</span></label>
+                <textarea class="form-control" placeholder="Enter message here" required [(ngModel)]="messageBeforePublishResult" [ngModelOptions]="{standalone: true}"></textarea>
+                <label for="exampleInpuThumbnail"  style="font-size: 12px;" class="form-label fw-bold">Display in app till admin is not publish the result</label>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Enter Competition Rule<span class="text-danger">*</span></label>
+                <textarea class="form-control" placeholder="Enter description here" [(ngModel)]="competitionRule" [ngModelOptions]="{standalone: true}"></textarea>
+              </div>  
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Description Url<span class="text-danger">*</span></label>
+                <input type="text" class="form-control" placeholder="Enter url here" required [(ngModel)]="descriptionUrl" [ngModelOptions]="{standalone: true}">
+              </div>
+              <!-- <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Is Competition free?<span class="text-danger">*</span></label>
+                <select [(ngModel)]="isCompetitionFree" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="FREE">Yes</option>
+                  <option value="PAID">No</option>
+                </select>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3" *ngIf="isCompetitionFree == 'PAID'">
+                <label for="exampleInpuThumbnail" class="form-label fw-bold">Enter Cost(IN INR)<span class="text-danger">*</span></label>
+                <input type="number" class="form-control" placeholder="Enter cost here" required [(ngModel)]="cost" [ngModelOptions]="{standalone: true}">
+              </div> -->
+            </div>
+
+          </div>        
+          <div class="modal-footer">        
+            <button *ngIf="competitionModelBtn == 'Add'" type="button" class="btn btn-outline-dark" (click)="addTest()">{{competitionModelBtn}}</button>        
+            <button *ngIf="competitionModelBtn == 'Update'" type="button" class="btn btn-outline-dark" (click)="updateCompetition()">{{competitionModelBtn}}</button>        
+          </div>        
+        </ng-template>
+        <ng-template #sendnotifications let-modal>
+          <div *ngIf="alertSNmessage" [ngClass]="alertSNmessage.cssClass">{{alertSNmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertSNmessage = null" aria-hidden="true"></i></div>
+
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Sent Notifications</h4>
+            <button type="button" class="close" aria-label="Close" (click)="competitionData = null;competitionNotifications=[];competitionIndex = -1;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="row mb-2 mb-md-0">
+                <!-- <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Select display target<span class="text-red">*</span></label>
+                  <select [(ngModel)]="displayTarget" [ngModelOptions]="{standalone: true}" class="form-select">                
+                    <option value="0" selected disabled>Select target</option>
+                    <option value="ONLY_REGISTERED">Only Registered</option>
+                    <option value="ALL_USERS">To All Users</option>
+                  </select>
+                </div> -->
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Enter title</label>
+                  <input type="text" class="form-control" placeholder="Enter title here" [(ngModel)]="notificationtitle" [ngModelOptions]="{standalone: true}">
+                </div>
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold">Enter Description</label>
+                  <input type="text" class="form-control" placeholder="Enter description here" [(ngModel)]="notificationdescription" [ngModelOptions]="{standalone: true}">
+                </div>
+                <div class="col-md-3 col-lg-3 mb-3">
+                  <label for="exampleInputEmail1" class="form-label fw-bold"></label>
+                  <button type="button" class="btn btn-outline-dark" (click)="sendNotificationServer()">Send</button>        
+                </div>    
+         
+            </div>
+            <table id="ExampleTable" class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Title</th>
+                  <th scope="col">Description</th>
+                  <!-- <th scope="col">Display Target</th> -->
+                  <th scope="col">No.Of Time Sent</th>
+                  <th scope="col">Created At</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let notification of competitionNotifications; let i = index;">
+                  <td>{{i+1}}</td>
+                  <td>{{notification.title}}</td>
+                  <td>{{notification.description}}</td>
+                  <!-- <td>{{notification.displayTarget}}</td> -->
+                  <td>{{notification.noOfTimeNotificationSent}}</td>
+                  <td>{{notification.createdAt | date:'dd/MM/yyyy hh:mm a'}}</td>
+                  <td>
+                    <button title="Resend notifications"  type="button" [disabled]="loading" (click)="resendNotificationsToCompetitionsStudent(i,notification)" class="btn btn-warning me-2 mb-2">
+                      <i class="fa fa-send" style="cursor: pointer;" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>        
+        </ng-template>
+        <ng-template #bulkuplaodquestionpaper let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title"  id="modal-basic-title">Bulk Upload Questions</h4>
+            <button type="button" class="close" aria-label="Close" id="closeBtn" (click)="competitionData = null;competitionQuestions=[];competitionIndex = -1;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertBUmessage" [ngClass]="alertBUmessage.cssClass">{{alertBUmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertBUmessage = null" aria-hidden="true"></i></div>
+            <div class="row mb-2 mb-md-0">
+              
+              <div class="col-md-6 col-lg-6 mb-3" *ngIf="!isQuestionListUplading">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Upload Questions</label>
+                 <input type="file" class="form-control" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .ods" id="bulkuploadexcelFile" (change)="handleBUFileInput($event)">
+              </div>
+              <div class="col-md-6 col-lg-6 mb-3" *ngIf="isQuestionListUplading">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Uploading...</label>
+              </div>
+              <div class="col-md-6 col-lg-6 mb-3">
+                <br>
+                <button type="button" [disabled]="isQuestionListUplading" class="btn btn-outline-dark"  style="margin-right: 10px;" (click)="bulkUploadPaperToServer()">Upload</button>
+                <button type="button"  class="btn btn-outline-dark" ><a style="text-decoration: none;color: #212529;" href="assets/bulkupload/MDM_Competition_Question_Template.csv" download>Download Sample File</a></button>
+                
+              </div> 
+            </div>
+            <table id="ExampleTable" class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Question Id</th>
+		              <th scope="col">chapterId</th>
+                  <th scope="col">Question Category</th>
+                  <th scope="col">Question Type</th>
+                  <th scope="col">Question</th>
+                  <th scope="col">Options</th>
+                  <th scope="col">Correct Answer</th>
+                  <th scope="col">Created At</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let question of competitionQuestions; let i = index;">
+                  <td>{{i+1}}</td>
+		  <td>
+                    {{ question._id }}
+                  </td>
+                  <td>{{question.chapterId ? (question.chapterId?.title+(question.chapterId?.subjectId ? " - "+question.chapterId?.subjectId?.name : "")) : "-"}}</td>
+                  <td>{{question.questionCategory | uppercase}}</td>
+                  <td>{{question.questionInputType | uppercase}}</td>
+                  <td>
+                    {{question.questionTitle}}<br>
+                    <img style="width: 25%;" *ngIf="question.questionImage" [src]="question.questionImage" />
+                  </td>
+                  <td>
+                    <div *ngIf="(question.questionCategory == 'singleSelection' || question.questionCategory == 'multipleSelection') && question.questionInputType == 'file'">
+                      <div>
+                        a.  <img style="width: 25%;" [src]="question.options.a" />
+                          {{question.options.a_title}}
+                      </div>
+                      <div>
+                        b.  <img style="width: 25%;" [src]="question.options.b" />
+                          {{question.options.b_title}}
+                      </div>
+                      <div  *ngIf='question.options.c'>
+                        c.  <img style="width: 25%;" [src]="question.options.c" />
+                          {{question.options.c_title}}
+                      </div>
+                      <div  *ngIf='question.options.d'>
+                        d.  <img style="width: 25%;" [src]="question.options.d" />
+                          {{question.options.d_title}}
+                      </div>
+                    </div>
+                    <div *ngIf="(question.questionCategory == 'singleSelection' || question.questionCategory == 'multipleSelection') && question.questionInputType == 'alphanumeric'">
+                      <div>
+                        a. {{question.options.a}}
+                      </div>
+                      <div>
+                        b. {{question.options.b}}
+                      </div>
+                      <div *ngIf='question.options.c'>
+                        c. {{question.options.c}}
+                      </div>
+                      <div *ngIf='question.options.d'>
+                        d. {{question.options.d}}
+                      </div>                      
+                    </div>   
+                    <div *ngIf="question.questionCategory == 'matchTheFollowing' && question.questionInputType == 'alphanumeric'" style="display: flex;">
+                      <div  style="width: 50%;">
+                        Left Side
+                        <div *ngFor="let option1 of question.matchingLeftOptions;let i = index;">
+                          {{i+1}}.{{option1}}
+                        </div>
+                      </div> 
+                      <div style="width: 50%;">
+                        Right Side
+                        <div *ngFor="let option2 of question.matchingRightOptions;let i = index;" >
+                          {{i+1}}.{{option2}}
+                        </div>  
+                      </div>                 
+                    </div>   
+                    <div *ngIf="question.questionCategory == 'chronological' && question.questionInputType == 'alphanumeric'">
+                      <div>
+                        a. {{question.options.a}}
+                      </div>
+                      <div>
+                        b. {{question.options.b}}
+                      </div>
+                      <div *ngIf='question.options.c'>
+                        c. {{question.options.c}}
+                      </div>
+                      <div *ngIf='question.options.d'>
+                        d. {{question.options.d}}
+                      </div>
+                    </div>                    
+                  </td>
+                  <td>
+                    {{ question.correctAnswer }}
+                  </td>
+                  <td>
+                    {{ question.createdAt | date:'dd/MM/yyyy hh:mm a' }}
+                  </td>
+                  <td>
+                    <button type="button" class="btn btn-danger" (click)="deleteQuestion(question._id,i)"><i class="fa fa-trash" title="Delete question" style="cursor: pointer;" aria-hidden="true"></i></button>
+                  </td>
+                </tr>
+                
+              </tbody>
+            </table>
+
+          </div>      
+        </ng-template>
+        
+        
+        <ng-template #competitionstudents let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Registered Students</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">Class</th>
+                  <th scope="col">Medium</th>
+                  <th scope="col">Student Name </th>
+                  <th scope="col">Mobile</th>
+                  <th scope="col">Email</th>
+                  <th scope="col">Address</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let data of usersList; let i = index;">
+                  <td>{{ i+1 }}</td>
+                  <td>{{ ordinal_suffix_of_eng(data.gradeId.gradeName) }}</td>
+                  <td>{{ data.mediumId.name }}</td>
+                  <td>{{ data.firstName+" "+data.lastName }}</td>
+                  <td>{{ data.mobileNumber }}</td>
+                  <td>{{ data.email }}</td>
+                  <td style="width: 10%;">{{ (data.address ? data.address : "")+" "+(data.city ? data.city : "")+(data.district ? (" "+data.district.districtName) : "" )+" "+(data.pincode ? data.pincode : "") }}</td>
+                </tr>
+                
+              </tbody>
+            </table>
+          </div>        
+          <div class="modal-footer justify-content-center">        
+            <button type="button" class="btn btn-primary" (click)="modal.close('Save click')">Ok</button>        
+          </div>        
+        </ng-template>
+        <ng-template #competitionactivate let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title">Activate Competition</h4>
+            <button type="button" class="close" aria-label="Close" (click)="competitionData = null;competitionIndex = -1;alertCAmessage = null;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertCAmessage" [ngClass]="alertCAmessage.cssClass">{{alertCAmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertCAmessage = null" aria-hidden="true"></i></div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3 col-lg-3 mb-3">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Competition access<span class="text-danger">*</span></label>
+                <select [(ngModel)]="competitionAccess" [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="ALL_MDM">All MDM Users</option>
+                  <option value="SCHOOL_LEVEL">School Wise</option>
+                </select>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3" *ngIf="competitionAccess == 'SCHOOL_LEVEL'">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Upload School Csv(Udise Code)<span class="text-danger">*</span></label>
+                <input type="file" class="form-control" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .ods" id="bulkuploadschoolUdiseCodeexcelFile" (change)="handleCAFileInput($event)">
+                <a href="assets/bulkupload/MDM_Competition_Schools_Template.csv" download>Download Sample File</a>
+              </div>
+              
+              <div class="col-md-6 col-lg-6 mb-3">
+                <br>
+                <button type="button"  class="btn btn-outline-dark"  style="margin-right: 10px;" (click)="activateCompetitionNewWay()">Activate</button>                
+              </div> 
+            </div>
+          </div>      
+        </ng-template>
+        <ng-template #competitionaccessschools let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Competition school list(Access)</h4>
+            <button type="button" class="close" aria-label="Close" (click)="competitionData = null;competitionIndex = -1;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertCAmessage" [ngClass]="alertCAmessage.cssClass">{{alertCAmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertCAmessage = null" aria-hidden="true"></i></div>
+
+
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-3 col-lg-3 mb-3" *ngIf="!isSchoolListUplading">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Upload School Csv(Udise Code)<span class="text-danger">*</span></label>
+                <input type="file" class="form-control" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel, .ods" id="bulkuploadschoolUdiseCodeexcelFile" (change)="handleCAFileInput($event)">
+                <a href="assets/bulkupload/MDM_Competition_Schools_Template.csv" download>Download Sample File</a>
+              </div>
+              <div class="col-md-3 col-lg-3 mb-3" *ngIf="isSchoolListUplading">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Uploading...</label>
+              </div>
+              
+              <div class="col-md-6 col-lg-6 mb-3">
+                <br>
+                <button type="button"  class="btn btn-outline-dark"  style="margin-right: 10px;" (click)="bulkUploadSchoolsForCompetitions()">Upload</button>                
+              </div> 
+            </div>
+
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr>
+                  <th scope="col">Sr. No.</th>
+                  <th scope="col">School name</th>
+                  <th scope="col">School Code(UDISE)</th>
+                  <th scope="col">Users count </th>
+                  <th scope="col">Action </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let school of competitionAccessSchoools; let i = index;">
+                  <td>{{ i+1 }}</td>
+                  <td>{{ school.schoolName }}</td>
+                  <td>{{ school.schoolCode }}</td>
+                  <td>{{ school.userIds && school.userIds.length }}</td>
+                  <td>
+                    <button type="button" *ngIf="!isSchoolListUplading" title="Remove School"  (click)="removeSchoolFromCompetition(i)" class="btn btn-danger me-2 mb-2">
+                      <i class="fa fa-trash" style="cursor: pointer;" aria-hidden="true"></i>
+                    </button>
+                  </td>
+                </tr>           
+              </tbody>
+            </table>
+          </div>        
+          <div class="modal-footer justify-content-center">        
+            <button type="button" class="btn btn-primary" (click)="competitionData = null;competitionIndex = -1;modal.close('Save click')">Ok</button>        
+          </div>        
+        </ng-template>
+        <ng-template #competitionsettings let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title">Competition Control Settings</h4>
+            <button type="button" class="close" aria-label="Close" (click)="competitionData = null;competitionIndex = -1;alertCSAmessage = null;modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div *ngIf="alertCSAmessage" [ngClass]="alertCSAmessage.cssClass">{{alertCSAmessage.text}} <i class="fa fa-times" style="float:right;cursor: pointer;" (click)="alertCSAmessage = null" aria-hidden="true"></i></div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="publishResult" [ngModelOptions]="{standalone: true}">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Show competition result to user
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="publishReview" [ngModelOptions]="{standalone: true}">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Show competition review to user(Review Questions)
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" [(ngModel)]="publishCertificate" [ngModelOptions]="{standalone: true}">
+                  <label class="form-check-label" for="flexCheckDefault">
+                    Show download certificate button to user
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <button type="button"  class="btn btn-outline-dark"  style="margin-right: 10px;" (click)="updateCompetitionSettings()">Update</button>                
+              </div> 
+            </div>
+          </div>         
+        </ng-template>
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="row mb-2 mb-md-0">
+            
+            
+            <div class="col-md-4 col-lg-4 mb-3 row">               
+              <div class="col-md-12 col-lg-12 mb-3">
+                <br>
+                <button type="button" (click)="loadAddCompetitionModel(createacompetitions)" class="btn btn-primary me-3">
+                  Add Competition
+                </button>
+                <!-- <button type="button" (click)="showCompetitionEnrolllist()" class="btn btn-primary me-3">
+                  Competition Enroll Report
+                </button>      -->
+                          
+              </div>
+            </div>
+              
+          </div>
+          
+        </div>
+        <div class="table-responsive  mt-3" style="overflow: auto;height: 650px;">
+     
+          <table id="ExampleTable" class="table table-striped table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">Class</th>
+                <th scope="col">Medium</th>
+                <th scope="col">Sponsor</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+                <th scope="col">Media</th>
+                <th scope="col">StartTime</th>
+                <th scope="col">Questions</th>
+                <th scope="col">Marking</th>
+                <th scope="col">Duration</th>
+                <th scope="col">Pricing</th>
+                <th scope="col">Access</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr><td colspan="12" scope="col"  class="dataTables_empty">Loading...</td></tr>
+            </tbody>
+           
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of competitionList; let i = index;">
+                <td>{{i+1}}</td>      
+                <td>
+                  <span *ngFor="let gradeId of data.gradeId">{{ ordinal_suffix_of_eng(gradeId.gradeName)}}&nbsp; </span>
+                </td>
+                <td>
+                  <span *ngFor="let mediumId of data.mediumId">{{ mediumId.name }}&nbsp; </span>
+                </td>
+                <td>{{ data.sponsorId ? data.sponsorId.name : "-" }}</td>         
+                <td>{{data.name}}</td>
+                <td >{{data.description}}</td>
+                <td>
+                  <div style="float: left;margin-right: 10px;">
+                    <img src="{{ data.thumbnail }}" style="width: 70px;height:70px;">
+                    <span>Thumbnail</span>
+                  </div>
+                  <div style="float: left;margin-right: 10px;">
+                    <img src="{{ data.bannerBeforeStart }}" style="width: 70px;height:70px;">
+                    <span>Banner(Before Submit)</span>
+                  </div>
+                  <div style="float: left;margin-right: 10px;">
+                    <img src="{{ data.flashscreenImage }}" style="width: 70px;height:70px;">
+                    <span>Flashscreen</span>
+                  </div>
+                  <div style="float: left;margin-right: 10px;">
+                    <img src="{{ data.bannerAfterSubmit }}" style="width: 70px;height:70px;">
+                    <span>Banner(After Submit)</span>
+                  </div>
+                </td>
+                <td>{{  data.startTime | date:'dd/MM/yyyy hh:mm a' }}</td>
+                <td>
+                  <a style="text-decoration: underline;cursor: pointer;font-weight: 700;" (click)="bulkUploadPaper(i,bulkuplaodquestionpaper)">
+                    View Questions ({{data.questionArray.length  }})
+                  </a>
+                </td>
+                <td>{{ data.questionArray.length*data.positiveMarks }} {{ "(+"+data.positiveMarks+", -"+data.negativeMarks+")" }}</td>
+                <td >{{data.duration}} min</td>
+                <td >{{data.isCompetitionFree}} <b>{{ data.isCompetitionFree == 'PAID' ? data.cost+" INR" : "" }}</b></td>
+                <td style="font-weight: 700;" *ngIf="data.competitionAccess == undefined || data.competitionAccess == 'ALL_MDM'">All Users</td>
+                <td *ngIf="data.competitionAccess == 'SCHOOL_LEVEL'"><a style="text-decoration: underline;cursor: pointer;font-weight: 700;" (click)="viewSchoolList(i,competitionaccessschools)">View Schools</a></td>
+                <td>
+                  
+                  <button type="button" [disabled]="loading" title="Edit Competition"  (click)="editCompetition(i,createacompetitions)" class="btn btn-secondary me-2 mb-2">
+                    <i class="fa fa-edit" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" [disabled]="loading" title="Delete Competition"  (click)="deleteCompetition(i)" class="btn btn-danger me-2 mb-2">
+                    <i class="fa fa-trash" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" [disabled]="loading"  title="{{data.status == 'ACTIVE' ? 'Deactivate Competition' : 'Activate Competition'}}" (click)="activateCompetition(i,competitionactivate)" class="btn {{ data.status == 'ACTIVE' ? 'btn-danger' : 'btn-success' }} me-2 mb-2">
+                    <i *ngIf="data.status != 'ACTIVE'" class="fa fa-check-square-o" style="cursor: pointer;" aria-hidden="true"></i>
+                    <i *ngIf="data.status == 'ACTIVE'"  class="fa fa-window-close-o" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" [disabled]="loading" title="View Competition Questions"  (click)="bulkUploadPaper(i,bulkuplaodquestionpaper)" class="btn btn-info me-2 mb-2">
+                    <i class="fa fa-group" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  
+                  <button type="button" [disabled]="loading"  title="Competition Enroll Users"  (click)="showCompetitionEnrolllist(i)" class="btn btn-success me-2 mb-2">
+                    <i class="fa fa-user-o" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button type="button" [disabled]="loading"   title="Competition Submitted Users Result" (click)="getCompetitionStudent(i)" class="btn btn-primary me-2 mb-2">
+                    <i class="fa fa-outdent" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+
+                  <!-- <button *ngIf="data.status != 'ACTIVE'" title="Publish Competition Result"  type="button" [disabled]="loading" (click)="publishResult(i)" class="btn btn-warning me-2 mb-2">
+                    <i class="fa fa-send" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button> -->
+                  <button title="Competition Controls"  type="button" [disabled]="loading" (click)="competitionSettings(i,competitionsettings)" class="btn btn-warning me-2 mb-2">
+                    <i class="fa fa-gear" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button *ngIf="data.status != 'ACTIVE'" title="Publish Competition Rank"  type="button" [disabled]="loading" (click)="publishRank(i)" class="btn btn-warning me-2 mb-2">
+                    <i class="fa fa-send-o" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <button title="Send Notifications"  type="button" [disabled]="loading" (click)="sendNotificationsModel(i,sendnotifications)" class="btn btn-dark me-2 mb-2">
+                    <i class="fa fa-sign-in" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                  <!-- <button *ngIf="userType != 'TEACHER'"  type="button" [disabled]="loading" (click)="loadUserPurchaseDetails(data._id,data.name)" class="btn btn-info me-2">
+                    <i class="fa fa-group"  title="Competition purchased student/teacher list" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button> -->
+                  <!-- <button *ngIf="userType != 'TEACHER'"  type="button" [disabled]="loading" (click)="getTSTests(data,createtestpapers)" class="btn btn-warning me-2">
+                    <i class="fa fa-modx"  title="Competition Question Paper and Answer key list" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button> -->
+
+                </td>
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>

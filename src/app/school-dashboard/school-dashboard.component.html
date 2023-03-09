@@ -1,0 +1,295 @@
+<div class="container-fluid overflow-auto" style="height: 100%;position: absolute;display: inline-block;background-color: #f3f3f4;">
+  <div class="row" style="height:80px">
+    <div class="col-sm-2 pt-3 mt-1">
+     <mat-form-field appearance="fill" *ngIf="gradeArray?.length > 0" class="w-100">
+          <mat-label>Grade</mat-label>
+          <mat-select multiple [(ngModel)]="payload.gradeId" (selectionChange)="selectChange('gradeId',$event.value)">
+            <mat-option *ngFor="let grade of gradeArray" [value]="grade._id">
+              {{grade.gradeName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100" *ngIf="showSchoolFilter">
+        <mat-label>Schools</mat-label>
+        <mat-select multiple [(ngModel)]="payload.schoolId" (selectionChange)="selectChange('schoolId',$event.value)">
+          <mat-option *ngFor="let school of schoolArray" [value]="school._id">
+            {{school?.schoolName}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Gender</mat-label>
+        <mat-select multiple [(ngModel)]="payload.gender" (selectionChange)="selectChange('gender',$event.value)">
+          <mat-option *ngFor="let gender of genderArray" [value]="gender">
+            {{gender}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="col-sm-2 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Medium</mat-label>
+        <mat-select multiple [(ngModel)]="payload.mediumId" (selectionChange)="selectChange('mediumId',$event.value)">
+          <mat-option *ngFor="let medium of mediumArray" [value]="medium._id">
+            {{medium.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <!-- <div class="col-sm-4 pt-3 mt-1">
+      <mat-form-field appearance="fill" class="w-100">
+        <mat-label>Enter a date range</mat-label>
+        <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+          <input matStartDate placeholder="Start date" formControlName="start">
+          <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChange()">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div> -->
+  </div>
+  <div class="row" style="height: calc( 100% - 80px);overflow: auto;">
+
+      <div class="row">
+        <div class=" col-lg-12 col-sm-12" *ngIf="showGMap" [hidden]='markers.length == 0'>
+            <google-map height="500px" width="100%" [options]="options">
+                  <map-marker
+                    #somemarker="mapMarker"
+                    *ngFor="let marker of markers"
+                    [position]="marker.position"
+                    [label]="marker.label"
+                    [title]="marker.title"
+                    [options]="marker.options"
+                    (mapClick)="openMarkerInfo(somemarker,marker.info)"
+                    >
+                  </map-marker>
+                  <map-info-window>{{ infoContent }}</map-info-window>
+            </google-map>
+        <!-- <button (click)="zoomIn()">Zoom in</button>
+          <button (click)="zoomOut()">Zoom out</button> -->
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12 col-sm-12 mt-3">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="bg-purple rounded box-shadow">
+                <h2 style="font-weight: 500;"><i class="fa fa-male" aria-hidden="true"></i>&nbsp; Total Users</h2>  
+                <p class="h3 mb-0">{{ userListLength == -1 ? "Loading" : userListLength }}</p>
+                <p class="mb-0" style="font-size: 12px;">*(Users x Grades)</p>
+                <!-- <hr style="background-color: white;">
+                <span>Better than last year (100%)</span> -->
+              </div>          
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="row">
+        <div class="col-lg-12 col-sm-12 mt-3">
+          <div class="row">
+            <div class="col-sm-3">
+              <div class="bg-purple rounded box-shadow">
+                <h1>Total Users</h1>  
+                <p class="h3 mb-0 text-right">{{ userListLength == -1 ? "Loading" : userListLength }}</p>
+                <p class="mb-0 text-right" style="font-size: 12px;">*(Users x Grades)</p>
+              </div>          
+            </div>
+            
+          </div>
+        </div>
+      </div> -->
+      <div class="row"> 
+        <div class="col-lg-12 col-sm-12 mb-3">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4 mt-3">
+              <div [chart]="avgStandardChart" class="shadow"></div>
+            </div>
+            <div class="col-lg-4 col-sm-4 mt-3" *ngFor="let chart of pieChartArr">
+              <div [chart]="chart" class="shadow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="avgDivisionChart || pieDivisionChartArr.length > 0"> 
+        <div class="col-lg-12 col-sm-12 mb-3">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4 mt-3" *ngIf="avgDivisionChart">
+              <div [chart]="avgDivisionChart" class="shadow"></div>
+            </div>
+            <div class="col-lg-4 col-sm-4 mt-3" *ngFor="let chart of pieDivisionChartArr">
+              <div [chart]="chart" class="shadow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row"> 
+        <!-- userlist -->
+        <div class="col-lg-12 col-sm-12 mt-3 mb-3" style="background: white;">
+          <p class="h3" style="padding: 12px 8px;margin-bottom: 0;">Learning Users</p>
+          <hr style="margin-top: 0;margin-bottom: 0;">
+          <table mat-table matTableExporter #exporter="matTableExporter" [dataSource]="dataSource" class="w-100" matSort>
+
+            <ng-container matColumnDef="fullName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name of Learner </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{ element.firstName + ' ' + element.lastName}} </td>
+            </ng-container>
+            <ng-container matColumnDef="grade">
+              <th mat-header-cell *matHeaderCellDef class="text-center">Grade (Class)</th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text">
+                &nbsp;{{element.gradeId?.gradeName}} &nbsp;
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="medium">
+              <th mat-header-cell *matHeaderCellDef> Medium </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.mediumId?.name}} </td>
+            </ng-container>
+            <ng-container matColumnDef="mobile">
+              <th mat-header-cell *matHeaderCellDef> mobile </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.mobileNumber}} </td>
+            </ng-container>
+            <ng-container matColumnDef="gender">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.gender}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="schoolName">
+              <th mat-header-cell *matHeaderCellDef> School Name </th>
+              <td mat-cell *matCellDef="let element" class="white-text">
+                {{element?.schoolId?.schoolName}} &nbsp;&nbsp; &nbsp;
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="userType">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+              <td mat-cell *matCellDef="let element" class="white-text"> {{element.userType}}</td>
+            </ng-container>
+
+          
+
+            <ng-container matColumnDef="learningCompletionPercentage">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Learning Completion </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.overallCompletionPercentage}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="audioProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Audio Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.audioPercentage}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ebookProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Book Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.ebookPercentage}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="notesProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Notes Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.notePercentage}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="testsProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Test Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.testPercentage}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="videoProgress">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Video Progress </th>
+              <td mat-cell *matCellDef="let element" class="text-center white-text"> {{ element?.studentProgressData == null ? 0 : element?.studentProgressData?.videoPercentage}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row [ngClass]="row.bgcolor" *matRowDef="let row; columns: displayedColumns;" (click)="onClickStudentRow(row)"></tr>
+          </table>
+
+          <mat-paginator [length]="dataLength" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons
+            [pageSize]="pageSize" (page)="getNext($event)" aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+      <div class="row"  *ngIf="avgSubjectChart ||  pieSubjectChartArr.length > 0">   
+        <div class="col-lg-12 col-sm-12 mb-3">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4 mt-3">
+              <div [chart]="avgSubjectChart" class="shadow"></div>
+            </div>
+            <div class="col-lg-4 col-sm-4 mt-3" *ngFor="let chart of pieSubjectChartArr">
+              <div [chart]="chart" class="shadow"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row" *ngIf="barSubjectChart"> 
+        <div class="col-lg-12 col-sm-12 mb-3">
+          <div [chart]="barSubjectChart" class="shadow"></div>
+        </div>
+      </div>
+      <div class="row" *ngIf="chapterdataLength > 0"> 
+        <div class="col-lg-12 col-sm-12 mb-3">
+          <div class="row">
+            <div class="col-lg-4 col-sm-4 mt-3">
+              <div [chart]="avgChapterChart" class="shadow"></div>
+              <div [chart]="barChapterChart" class="shadow mt-3"></div>
+            </div>
+            <div class="col-lg-8 col-sm-8 mt-3">
+              <!-- <p class="text-theme h3">Chapter List</p> -->
+              <table mat-table [dataSource]="chapterDataSource" class="w-100" matSort>
+        
+                <ng-container matColumnDef="name">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Name of Chapter </th>
+                  <td mat-cell *matCellDef="let element" class=""> {{ element?.title}} </td>
+                </ng-container>
+                <ng-container matColumnDef="learningCompletionPercentage">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Learning Completion </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.overAllPercentage}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="audioProgress">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Audio Progress </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.audioPercentage}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="ebookProgress">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Book Progress </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{  element?.ebookPercentage}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="notesProgress">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Notes Progress </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.notePercentage}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="testsProgress">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Test Progress </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.testPercentage}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="videoProgress">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Video Progress </th>
+                  <td mat-cell *matCellDef="let element" class="text-center "> {{ element?.videoPercentage}} </td>
+                </ng-container>
+        
+                <tr mat-header-row *matHeaderRowDef="displayedChapterColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedChapterColumns;"></tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="row">  -->
+        <!-- <div class="col-lg-12 col-sm-12 mb-3" *ngIf="barChapterChart">
+          <div [chart]="barChapterChart" class="shadow"></div>
+        </div> -->
+      <!-- </div> -->
+      <div class="loader" *ngIf="loader"></div>
+  </div>  
+</div>

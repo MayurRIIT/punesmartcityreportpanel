@@ -1,0 +1,173 @@
+<section class="bg-theme">
+  <!-- headers -->
+  <header class="navbar sticky-top flex-md-nowrap p-1 shadow">
+    <div class="row w-100">
+      <div class="col-sm-9">
+        <p class="h4 text-white pt-2">Dashboard</p>
+      </div>
+      <div class="col-sm-3 text-right pt-2">
+        <i class="fa fa-refresh text-white" (click)="reset()"></i>
+      </div>
+    </div>
+  </header>
+</section>
+<section class="">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Medium</mat-label>
+          <mat-select multiple [(ngModel)]="payload.mediumId" (selectionChange)="selectChange('mediumId',$event.value)">
+            <mat-option *ngFor="let medium of mediumArray" [value]="medium._id">
+              {{medium.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" *ngIf="gradeArray?.length > 0" class="w-100">
+          <mat-label>Grade</mat-label>
+          <mat-select multiple [(ngModel)]="payload.gradeId" (selectionChange)="selectChange('gradeId',$event.value)">
+            <mat-option *ngFor="let grade of gradeArray" [value]="grade._id">
+              {{grade.gradeName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Schools</mat-label>
+          <mat-select multiple [(ngModel)]="payload.schoolId" (selectionChange)="selectChange('schoolId',$event.value)">
+            <mat-option *ngFor="let school of schoolArray" [value]="school._id">
+              {{school?.schoolName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Roles</mat-label>
+          <mat-select multiple [(ngModel)]="payload.role" (selectionChange)="selectChange('role',$event.value)">
+            <mat-option *ngFor="let role of roleArray" [value]="role">
+              {{role}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChange()">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</section>
+<section>
+  <div class="container-fluid">
+    <div class="row">
+      <div class=" col-lg-4 col-sm-12">
+        <!-- onboarding -->
+        <div [chart]="onboardingChart" class="shadow"></div>
+      </div>
+      <div class="col-lg-8 col-sm-12">
+        <div class="row">
+          <div class="col-sm-4">
+            <div [chart]="mediumChart" class="shadow"></div>
+          </div>
+          <div class="col-sm-4">
+            <div [chart]="roleChart" class="shadow"></div>
+          </div>
+          <div class="col-sm-4">
+            <div [chart]="genderChart" class="shadow"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 mt-3">
+        <!-- userlist -->
+        <p class="text-theme h3">User List</p>
+        <table mat-table [dataSource]="dataSource" class="w-100" matSort>
+
+          <ng-container matColumnDef="fullName">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name of Learner </th>
+            <td mat-cell *matCellDef="let element"> {{element.fullName}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="medium">
+            <th mat-header-cell *matHeaderCellDef> Medium </th>
+            <td mat-cell *matCellDef="let element"> {{element.userObject.mediumId?.name}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="gender">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+            <td mat-cell *matCellDef="let element"> {{element.gender}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="schoolName">
+            <th mat-header-cell *matHeaderCellDef> School Name </th>
+            <td mat-cell *matCellDef="let element">
+              {{element?.userObject?.schoolId?.schoolName}} &nbsp;&nbsp; &nbsp;
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="userType">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+            <td mat-cell *matCellDef="let element"> {{element.userObject.userType}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="grade">
+            <th mat-header-cell *matHeaderCellDef class="text-center">Grade (Class)</th>
+            <td mat-cell *matCellDef="let element" class="text-center">
+              &nbsp;{{element.userObject.gradeId?.gradeName}} &nbsp;
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="learningCompletionPercentage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Learning Completion </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.learningCompletionPercentage}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="audioProgress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Audio Progress </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.audioProgress}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="ebookProgress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> E-Book Progress </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.ebookProgress}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="notesProgress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Notes Progress </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.notesProgress}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="testsProgress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Test Progress </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.testsProgress}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="videoProgress">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Video Progress </th>
+            <td mat-cell *matCellDef="let element" class="text-center"> {{element.videoProgress}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [length]="dataLength" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons
+          [pageSize]="pageSize" (page)="getNext($event)" aria-label="Select page">
+        </mat-paginator>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="loader" *ngIf="loader"></div>

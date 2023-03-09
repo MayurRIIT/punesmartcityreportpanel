@@ -1,0 +1,32 @@
+<div mat-dialog-content>
+  <p><strong>Enter Email Id</strong></p>
+  <mat-form-field appearance="fill" [style.width.px]="400">
+    <input
+      matInput
+      [(ngModel)]="data.email"
+      pattern="[a-zA-Z0-9.-_]{1,}@[a-zA-Z.-]{2,}[.]{1}[a-zA-Z]{2,}"
+    />
+    <mat-error *ngIf="data.email"
+      >Please enter a valid email address
+    </mat-error>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions style="display: flex; justify-content: space-evenly">
+  <button
+    mat-raised-button
+    color="warn"
+    appearance="fill"
+    (click)="onNoClick()"
+  >
+    No Thanks
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    appearance="fill"
+    [mat-dialog-close]="data"
+    cdkFocusInitial
+  >
+    Ok
+  </button>
+</div>

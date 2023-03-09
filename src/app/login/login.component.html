@@ -1,0 +1,28 @@
+<div class="login-container">
+    <main class="form-signin">
+        <form>
+          <img class="mb-4" src="assets/images/Pune-Smart-City-Logo.jpg" alt="" width="72" height="72">
+          <h1 class="h3 mb-3 fw-normal">पुणे स्मार्ट सिटी डेव्हलपमेंट कॉर्पोरेशन लिमिटेड</h1>
+          <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+      
+          <div class="form-floating">
+            <input type="text"  [(ngModel)]="email" [ngModelOptions]="{standalone: true}" class="form-control" id="floatingInput" placeholder="Email address / Mobile number">
+            <label for="floatingInput">Email address / Mobile number</label>
+          </div>
+          <div class="form-floating">
+            <input type="password"  [(ngModel)]="password" [ngModelOptions]="{standalone: true}"  class="form-control" id="floatingPassword" placeholder="Password">
+            <label for="floatingPassword">Password</label>
+          </div>
+    <!--   
+          <div class="checkbox mb-3">
+            <label>
+              <input type="checkbox" value="remember-me"> Remember me
+            </label>
+          </div> -->
+          <button class="w-100 btn btn-lg btn-primary" (click)="loginEvent()" [disabled]="loading" type="submit">Sign in</button>
+          <p class="mt-5 mb-3 text-muted">&copy; {{year}}</p>
+        </form>
+      </main>
+</div>
+
+

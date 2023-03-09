@@ -1,0 +1,21 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid" style="position: absolute;height: calc( 100% - 67px );">
+    <div class="row flex-xl-nowrap" style="height: 100%;">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+      <div class="col-md-9 ms-sm-auto col-lg-10">
+        <!-- <div style="height: 40px;">
+          <app-home-tabs></app-home-tabs>
+        </div> -->
+
+        <div class="shadow" style="position: relative;height: 100%; border: 1px solid rgba(0, 0, 0, 0.125);border-radius: 0.25rem;">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

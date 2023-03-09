@@ -1,0 +1,13 @@
+.text-right {
+  text-align: right;
+}
+
+.pdf-wrapper {
+  height: 500px;
+  overflow-y: auto;
+}
+
+.page-wrapper {
+  height: calc(100vh - 74px);
+  overflow-y: auto;
+}

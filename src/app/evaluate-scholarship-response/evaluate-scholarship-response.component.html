@@ -1,0 +1,50 @@
+<div style="margin: 0;padding: 0;height: 100%;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid" style="height: 100%;">
+    <div class="row"  style="height: 100%;">
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+          <app-sidenavmenu></app-sidenavmenu>
+        </nav>
+
+        <div class="col-md-9 col-lg-10" style="overflow-y: auto;height: 100%;">
+          <div class="row"   style="height: 83%;">
+            <div class="col-md-12 col-lg-12 col-sm-12" style="height: 60px">
+              <p class="text-primary h3 mt-3">Paper Response - {{scholarshipObj?.scholarshipId?.name}} - {{ scholarshipObj?.paperId?.subjectId?.name }}</p>
+            </div>
+            <div class="col-md-12 col-lg-12 col-sm-12" style="height: calc( 100% - 60px );">
+              <div class="pdf-wrapper">
+                <div id='pdf-div' class='pdf-view'></div>
+              </div>
+            </div>
+          </div> 
+          <div class="row"   style="height: 17%;border-top:1px solid #cecece;">
+            <div class="col-md-2 col-lg-2 col-sm-2 text-center">
+              <label>Download Student Copy</label>
+              <button class="btn btn-secondary "color="primary">
+                <a style="color: white;text-decoration: none;" href="{{scholarshipObj?.fileName}}">Download</a>
+              </button>
+            </div>
+            
+            <div class="col-md-2 col-lg-2 col-sm-2">
+              <label>Upload Modified Sheet</label>
+              <input type="file" id="file" accept="application/pdf" class="form-control" (change)="handleFileInput($event)">
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-2">
+              <label>Marks Obtained</label>
+              <input type="text" class="form-control" [(ngModel)]="responsePayload.obtainedTotalMarks"  (change)="getTotal()" required>
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-2">
+                <label>Total Marks</label>
+                <input type="text" class="form-control" [(ngModel)]="responsePayload.totalMarks" (change)="getTotal()" required>
+            </div>
+            <div class="col-md-2 col-lg-2 col-sm-2 pt-2">
+              <button class="btn btn-primary " color="primary" (click)="updateResponse()">
+                Save Result
+              </button>
+            </div>
+          </div>  
+        </div>
+    </div>
+  </div>
+</div>

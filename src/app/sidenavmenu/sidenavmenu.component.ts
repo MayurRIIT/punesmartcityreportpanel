@@ -1,0 +1,140 @@
+import { Component, OnInit } from '@angular/core';
+import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
+import { UserService } from '../core/services/user.service';
+import { AlertService } from '../core/services/alert.service';
+
+@Component({
+  selector: 'app-sidenavmenu',
+  templateUrl: './sidenavmenu.component.html',
+  styleUrls: ['./sidenavmenu.component.scss'],
+})
+export class SidenavmenuComponent implements OnInit {
+
+  moduleselected: string = "home";
+  sideMenuList: any;
+
+  firstName: string = "";
+  lastName: string = "";
+  subName: string = "";
+  userType: string = "";
+
+
+  constructor(private router: Router, private userService: UserService, private alertService: AlertService,) { }
+
+
+  ngOnInit() {
+
+    // console.log("-----ngOnInit - SidenavmenuComponent----------- ")
+
+    if (localStorage.getItem("sidemenuurl"))
+      this.moduleselected = localStorage.getItem("sidemenuurl");
+
+      this.firstName = localStorage.getItem("firstName");
+      this.lastName = localStorage.getItem("lastName");
+      this.subName = localStorage.getItem("subName");
+      this.userType = localStorage.getItem("userType");
+
+    this.getSideMenus();
+  }
+
+  getSideMenus() {
+    this.userService.getSideMenuItem(localStorage.getItem("roleId")).subscribe(response => {
+      console.log(response);
+      if (response.responseCode == 200) {
+        //webMainModules , roleModules
+        //this.sideMenuList = response.result.roleModules.moduleArray;let moduleArray = response.result.roleModules.moduleArray;
+        let moduleArray = response.result.roleModules.moduleArray;
+        let webMainModules = response.result.webMainModules;
+
+        let expandsidemenuid = "";
+        if (localStorage.getItem("expandsidemenuid"))
+            expandsidemenuid = localStorage.getItem("expandsidemenuid");
+        
+        let obj = {};
+        moduleArray.map(moduleelement => {
+          webMainModules.map(mainModule => {
+            if(mainModule.webmodules && mainModule.webmodules.length == 0 && mainModule.url != ""){
+              mainModule.children = [];
+              mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
+              obj[mainModule._id] = mainModule;
+            }else{
+              mainModule.expandFlag = expandsidemenuid == mainModule._id ? true : false;
+              mainModule.webmodules.find(mainModuleelement => {
+                if(mainModuleelement._id == moduleelement._id){
+                  mainModuleelement.webMainModuleId = mainModule;
+                  if(mainModule.children){
+                    mainModule.children.push(mainModuleelement);
+                  }else{
+                    mainModule.children = [mainModuleelement];
+                  }
+                  
+                  obj[mainModule._id] = mainModule
+                }          
+              });
+            }    
+          });
+        });
+
+        moduleArray = [];
+        for (let key in obj) {
+          moduleArray.push(obj[key]);
+        }
+
+        moduleArray.sort(function (a, b) {
+          return a.sequenceNumber - b.sequenceNumber;
+        });
+      
+        console.log(moduleArray);
+        
+        this.sideMenuList = moduleArray;
+      } else {
+        this.alertService.error(response.responseMessage);
+      }
+    },
+      error => {
+        this.alertService.error(error);
+      });
+  }
+
+  ngAfterViewInit() {
+
+  }
+
+  loadModule(event,iModule) {
+    console.log('loadModule',iModule)
+    event && event.stopPropagation();
+    localStorage.setItem("sidemenuname", iModule.name);
+    localStorage.setItem("sidemenuurl", iModule.url);
+    this.moduleselected = iModule.url;
+    this.router.navigate(['../' + iModule.url], { replaceUrl: true });
+
+    localStorage.setItem("expandsidemenuid", iModule.webMainModuleId ? iModule.webMainModuleId._id : iModule._id);
+
+  }
+
+
+  loadMainModule(event,iModule) {
+    console.log('loadMainModule',iModule)
+    event.stopPropagation();
+
+    if(this.moduleselected == iModule.url) return;
+
+    this.sideMenuList.map(moduleelement => {
+      moduleelement.expandFlag = false;
+    });
+
+    if(iModule.url != "" && iModule.children.length == 0){
+      iModule.expandFlag = false;
+      this.loadModule(null,iModule);
+    }else{
+      iModule.expandFlag = true;
+    }
+  }
+
+  public goTo(link) {
+    this.moduleselected = 'daily-summary';
+    this.router.navigate(['home', link]);
+  }
+
+
+}

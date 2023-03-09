@@ -1,0 +1,92 @@
+<section class="bg-theme">
+  <!-- headers -->
+  <header class="navbar sticky-top flex-md-nowrap p-1 shadow">
+    <div class="row w-100">
+      <div class="col-sm-9">
+        <p class="h4 text-white pt-2">User Content</p>
+      </div>
+      <div class="col-sm-3 text-right pt-2">
+        <i class="fa fa-refresh text-white" (click)="reset()"></i>
+      </div>
+    </div>
+  </header>
+</section>
+<!-- filter -->
+<section class="">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Medium</mat-label>
+          <mat-select multiple [(ngModel)]="payload.mediumId" (selectionChange)="selectChange('mediumId',$event.value)">
+            <mat-option *ngFor="let medium of mediumArray" [value]="medium._id">
+              {{medium.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" *ngIf="gradeArray?.length > 0" class="w-100">
+          <mat-label>Grade</mat-label>
+          <mat-select multiple [(ngModel)]="payload.classId" (selectionChange)="selectChange('classId',$event.value)">
+            <mat-option *ngFor="let grade of gradeArray" [value]="grade._id">
+              {{grade.gradeName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Schools</mat-label>
+          <mat-select multiple [(ngModel)]="payload.schoolId" (selectionChange)="selectChange('schoolId',$event.value)">
+            <mat-option *ngFor="let school of schoolArray" [value]="school._id">
+              {{school?.schoolName}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-2 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Roles</mat-label>
+          <mat-select multiple [(ngModel)]="payload.role" (selectionChange)="selectChange('role',$event.value)">
+            <mat-option *ngFor="let role of roleArray" [value]="role">
+              {{role}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-sm-4 pt-3 mt-1">
+        <mat-form-field appearance="fill" class="w-100">
+          <mat-label>Enter a date range</mat-label>
+          <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+            <input matStartDate placeholder="Start date" formControlName="start">
+            <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChange()">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="container-fluid">
+  <div class="row">
+    <div class="col-sm-4">
+      <div [chart]="avgStandardChart" class="shadow"></div>
+    </div>
+    <div class="col-sm-4">
+      <div [chart]="avgChart" class="shadow"></div>
+    </div>
+    <div class="col-sm-4">
+      <div [chart]="avgGenderChart" class="shadow"></div>
+    </div>
+  </div>
+  <hr>
+  <div class="row">
+    <div class="col-sm-12">
+      <div [chart]="avgComponentChart" class="shadow"></div>
+    </div>
+  </div>
+</section>
+<div class="loader" *ngIf="loader"></div>

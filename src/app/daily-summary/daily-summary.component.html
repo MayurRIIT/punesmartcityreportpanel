@@ -1,0 +1,78 @@
+<div>
+  <header class="navbar  sticky-top flex-md-nowrap p-3 shadow">
+
+    <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse"
+      data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#">
+      <img src="assets/images/clientlogo120.png" alt="" width="32" height="32">
+      MDM Master Report
+    </a>
+    <div class="navbar-nav">
+      <div class="nav-item text-nowrap">
+        <a class="nav-link px-3" href="#" (click)="logout()">Sign out</a>
+      </div>
+    </div>
+  </header>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <div class="col-md-9 ms-sm-auto col-lg-10">
+
+        <div class="card m-1 bg-light shadow mt-2 page-wrapper">
+
+          <!-- daily summary report -->
+          <div class="container mt-3">
+            <p class="text-primary h1">Daily Summary Report</p>
+            <div class="row justify-content-end">
+              <div class="col-sm-4">
+
+                <mat-form-field appearance="fill" class="w-100">
+                  <mat-label>Enter a date range</mat-label>
+                  <mat-date-range-input [rangePicker]="picker" [formGroup]="range">
+                    <input matStartDate placeholder="Start date" formControlName="start">
+                    <input matEndDate placeholder="End date" formControlName="end" (dateChange)="dateRangeChange()">
+                  </mat-date-range-input>
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-date-range-picker #picker></mat-date-range-picker>
+                </mat-form-field>
+
+              </div>
+              <div class="col-sm-12">
+                <div class="row">
+                  <div class="col-sm-3 pb-3" *ngFor="let item of tileArrayWithDate">
+                    <div class="card bg-white text-primary shadow p-3">
+                      <p class="h5">{{item.name}}</p>
+                      <ng-container *ngIf="!item.special;else special">
+                        <p class="h1 text-right mt-3">{{item.value}}</p>
+                      </ng-container>
+                      <ng-template #special>
+                        <p class="h1 text-right mt-3">{{item.value[item.key]}}</p>
+                      </ng-template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <hr>
+            <div class="row">
+              <div class="col-sm-3 pb-3" *ngFor="let item of tileArray">
+                <div class="card bg-primary text-white shadow p-3">
+                  <p class="h5 ">{{item.name}}</p>
+                  <p class="h1 text-right mt-3">{{item.value}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="loader" *ngIf="loader"></div>

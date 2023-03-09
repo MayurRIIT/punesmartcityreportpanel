@@ -1,0 +1,87 @@
+<div style="margin: 0;padding: 0;">
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        
+        <div class="table-responsive mt-3" style="overflow: auto;">
+          
+          <table id="ExampleTable" class="table table-all table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+             
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">No of licenses</th>
+                <th scope="col">Student</th>
+                <th scope="col">Teacher</th>
+                <th scope="col">Parent</th>
+                <th scope="col">Other</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr>
+                <td colspan="6">Loading...</td>
+              </tr>
+            </tbody>
+            <!-- <tbody *ngIf="datalist.length == 0 && !loading">
+              <tr>
+                <td colspan="6">No data</td>
+              </tr>
+            </tbody> -->
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of datalist;let i = index">
+                <td>{{ i+1 }}</td>
+                <td>{{ data.licenseCount  }}</td>
+                <td>
+                  <div style="display: flex;">
+                    <input type="number" class="form-control amountInput" placeholder="Enter amount" [(ngModel)]="data.studentCost.cost" [ngModelOptions]="{standalone: true}">
+                    <button type="button" [disabled]="loading" title="Save details"  (click)="saveProcingModel(data,'STUDENT')" class="btn btn-success btnsave">
+                      SAVE
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div style="display: flex;">
+                    <input type="number" class="form-control amountInput" placeholder="Enter amount" [(ngModel)]="data.teacherCost.cost" [ngModelOptions]="{standalone: true}">
+                    <button type="button" [disabled]="loading" title="Save details"  (click)="saveProcingModel(data,'TEACHER')" class="btn btn-success btnsave">
+                      SAVE
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div style="display: flex;">
+                    <input type="number" class="form-control amountInput" placeholder="Enter amount" [(ngModel)]="data.parentCost.cost" [ngModelOptions]="{standalone: true}">
+                    <button type="button" [disabled]="loading" title="Save details"  (click)="saveProcingModel(data,'PARENT')" class="btn btn-success btnsave">
+                      SAVE
+                    </button>
+                  </div>
+                </td>
+                <td>
+                  <div style="display: flex;">
+                    <input type="number" class="form-control amountInput" placeholder="Enter amount" [(ngModel)]="data.otherCost.cost" [ngModelOptions]="{standalone: true}">
+                    <button type="button" [disabled]="loading" title="Save details"  (click)="saveProcingModel(data,'OTHER')" class="btn btn-success btnsave">
+                      SAVE
+                    </button>
+                  </div>
+                </td>
+                 
+                <!-- <td>
+                  <button type="button" [disabled]="loading" (click)="updateZoomDetails(data,updatezoomdetailsmodel)" class="btn btn-danger me-2">
+                    <i class="fa fa-video-camera" title="Update Zoom details" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                </td>            -->
+              </tr>
+              
+            </tbody>
+          </table>
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>

@@ -1,0 +1,15 @@
+<h1 mat-dialog-title class="text-primary">Select Teacher</h1>
+<div mat-dialog-content>
+  <mat-form-field appearance="fill" *ngIf="teacherArray?.length">
+    <mat-label>Select Teacher</mat-label>
+    <mat-select [(value)]="selectedTeacher">
+      <mat-option *ngFor="let teacher of teacherArray" [value]="teacher.id">
+        {{teacher.name}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-flat-button color="primary" mat-button (click)="selectTeacher()">Choose</button>
+  <button mat-button mat-dialog-close cdkFocusInitial>Close</button>
+</div>

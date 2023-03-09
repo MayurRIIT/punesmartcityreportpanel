@@ -1,0 +1,58 @@
+<div style="margin: 0;padding: 0;">
+
+
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <br>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-sm-12">
+              <span class="h1 text-primary">Exam Response</span>
+              <br>
+              <table id="ExampleTable" class="table table-striped table-responsive" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+                <thead>
+                  <tr>
+                    <!-- <th>Profile</th> -->
+                    <th>Name</th>
+                    <th>Grade</th>
+                    <th>Division</th>
+                    <th>Medium</th>
+                    <th>School</th>
+                    <th>Mobile Number</th>
+                    <th>Correct Count</th>
+                    <th>Incorrect Count</th>
+                    <th>Test Marks</th>
+                    <th>Test Scores</th>
+                    <th>Time Taken</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let student of studentResponse">
+                    <!-- <td><img class="img-fluid" [src]="student?.studentId?.profilePic"></td> -->
+                    <td>{{student?.studentId?.firstName}} {{student?.studentId?.lastName}}</td>
+                    <td>{{student?.studentId?.gradeId?.gradeName}}</td>
+                    <td>{{student?.studentId?.divisionId?.divisionName}}</td>
+                    <td>{{student?.studentId?.mediumId?.name}}</td>
+                    <td>{{student?.studentId?.schoolId?.schoolName}}</td>
+                    <td>{{student?.studentId?.mobileNumber}}</td>
+                    <td>{{student?.correct?.count}}</td>
+                    <td>{{student?.inCorrect?.count}}</td>
+                    <td>{{student?.testMarks}}</td>
+                    <td>{{student?.testScore}}</td>
+                    <td>{{student?.timeTaken}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+  </div>
+</div>

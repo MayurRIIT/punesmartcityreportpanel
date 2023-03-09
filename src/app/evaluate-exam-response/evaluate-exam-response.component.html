@@ -1,0 +1,94 @@
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid page-wrapper">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+      <div class="col-md-9 col-lg-10" *ngIf="responseForm">
+        <form [formGroup]="responseForm" (ngSubmit)="updateResponse()">
+          <div class="row">
+            <div class="col-sm-12">
+              <p class="text-primary h3 mt-3">Exam Response - {{examObj?.title}}</p>
+            </div>
+            <br><br> <br>
+            <div class="col-sm-8">
+              <div class="pdf-wrapper">
+                <div id='pdf-div' class='pdf-view'></div>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <p class="text-primary h3"> Question List </p>
+              <hr>
+              <div class="row">
+                <div class="col-sm-12" style="overflow-y: auto; max-height: 380px;" *ngIf="questionMarks">
+                  <div formArrayName="questionMarks"
+                    *ngFor="let question of responseForm.get('questionMarks')['controls'];let i = index">
+                    <div [formGroupName]="i">
+                      <mat-form-field class="w-100" appearance="fill">
+                        <mat-label>Question No: {{i+1}}</mat-label>
+                        <input matInput formControlName="marks" (change)="getTotal()">
+                      </mat-form-field>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-12">
+                  <div class="text-danger small" *ngIf="evaluatedAnswerSheetUrl.errors?.required">Please upload file
+                  </div>
+                  <div class="text-danger small" *ngIf="totalMarks.errors?.required">Total marks required</div>
+                  <div class="text-danger small" *ngIf="passingStatus.errors?.required">Please update passing
+                    status</div>
+                  <div class="text-danger small" *ngIf="obtainedTotalMarks.errors?.required">obtained marks required
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 text-right mb-3 mt-3">
+              <div class="row">
+                <div class="col-sm-2 pt-2">
+                  <input type="file" id="file" class="form-control" (change)="handleFileInput($event.target)">
+                </div>
+                <div class="col-sm-2">
+                  <mat-form-field class="w-100" appearance="fill">
+                    <mat-label>Marks Obtained</mat-label>
+                    <input matInput formControlName="obtainedTotalMarks" readonly required>
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-2">
+                  <mat-form-field class="w-100" appearance="fill">
+                    <mat-label>Total Marks</mat-label>
+                    <input type="number" matInput formControlName="totalMarks" required (change)="getTotal()">
+                  </mat-form-field>
+                </div>
+                <div class="col-sm-2">
+                  <mat-form-field class="w-100" appearance="fill">
+                    <mat-label>Percentage</mat-label>
+                    <input matInput formControlName="averagePercentage" required readonly>
+                  </mat-form-field>
+                </div>
+                <!-- <div class="col-sm-2">
+                  <mat-form-field appearance="fill" class="w-100">
+                    <mat-label>Passing Status</mat-label>
+                    <mat-select formControlName="passingStatus">
+                      <mat-option value="PASS">
+                        Pass
+                      </mat-option>
+                      <mat-option value="FAIL">
+                        Fail
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div> -->
+                <div class="col-sm-4 pt-2 text-right">
+                  <button type="submit" mat-flat-button color="primary" [disabled]="responseForm.invalid">
+                    Save Response
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </div>

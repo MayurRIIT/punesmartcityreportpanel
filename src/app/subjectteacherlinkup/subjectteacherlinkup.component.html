@@ -1,0 +1,138 @@
+<div style="margin: 0;padding: 0;">
+
+  
+  <app-topmenuheader></app-topmenuheader>
+  <div class="container-fluid">
+    <div class="row">
+      <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+        <app-sidenavmenu></app-sidenavmenu>
+      </nav>
+
+      <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <ng-template #assignsubject let-modal>
+          <div class="modal-header">        
+            <h4 class="modal-title" id="modal-basic-title">Assign Subject</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-12 col-lg-12 mb-3">
+                <label for="exampleInputEmail1" class="form-label fw-bold">Allow access</label>
+              </div>
+            </div>  
+            <div class="row mb-2 mb-md-0">
+              <div class="col-md-6 col-lg-6 mb-3" *ngFor="let data of subjectList; let i = index;" >
+                <label>
+                  <input type="checkbox" value="true" [(ngModel)]="data.selected">&nbsp;&nbsp;{{data.name}}
+                </label>
+              </div>
+            </div>  
+          </div>
+                
+          <div class="modal-footer justify-content-center">        
+            <button type="button" class="btn btn-primary">Update</button>        
+          </div>        
+        </ng-template>
+        <div class="justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+          <div class="row mb-2 mb-md-0">
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select School</label>
+              <ng-select class="custom" [(ngModel)]="schoolId" [searchable] ="true" appendTo="body">
+                <ng-option [value]="0" selected disabled>Select School</ng-option>
+                <ng-option *ngFor="let school of schoolList" [value]="school._id">{{school.schoolName}}</ng-option>
+              </ng-select> 
+            </div>
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Class</label>
+              <select [(ngModel)]="gradeId" (change)="getSubjectList()" [ngModelOptions]="{standalone: true}" class="form-select">                
+                <option value="0" selected>All</option>
+                <option *ngFor="let grade of gradeList" [ngValue]="grade">{{grade.gradeName}}
+                </option>
+              </select>
+            </div>
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Medium</label>
+              <select [(ngModel)]="mediumId" (change)="onMediumChangeGetSubjectList($event)"  [ngModelOptions]="{standalone: true}" class="form-select">                
+                  <option value="0" selected>All</option>
+                  <option *ngFor="let medium of mediumsList" [ngValue]="medium">{{medium.name}}</option>
+              </select>
+            </div> 
+                 
+            <div class="col-md-2 col-lg-2 mb-3">
+              <label for="exampleInputEmail1">Select Subject</label>
+              <ng-select class="custom" [(ngModel)]="subjectId" [searchable] ="true" appendTo="body">
+                <ng-option [value]="0" selected>All</ng-option>
+                <ng-option *ngFor="let subject of subjectList" [value]="subject">{{subject.name}}</ng-option>
+              </ng-select> 
+            </div> 
+            
+            <div class="col-md-4 col-lg-4 mb-3 row">               
+              <div class="col-md-12 col-lg-12 mb-3">
+                <br>
+                <button type="button" [disabled]="loading" (click)="loadDashboardData()" class="btn btn-primary me-3">
+                  Load Data
+                </button>     
+                <button *ngIf="datalist.length > 0" type="button" (click)="exportAsXLSX()" class="btn btn-secondary">
+                  Export
+                </button>             
+              </div>
+            </div>
+              
+          </div>
+          
+        </div>
+        <!-- <div class="row">
+          <div class="col-md-3 col-lg-3 d-flex">
+              Search: &nbsp;&nbsp;
+              <input class="" type="text" [(ngModel)]="searchTerm" />
+          </div>
+          
+        </div>   -->
+        <div class="table-responsive  mt-3" style="overflow: auto;height: 650px;">
+     
+          <table id="ExampleTable" class="table table-striped table-sm row-border hover" datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+            <thead>
+              <tr>
+                <th scope="col">Sr. No.</th>
+                <th scope="col">Full Name</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Email</th>
+                <th scope="col">School</th>
+                <th scope="col">User Type</th>
+                <th scope="col">Created at</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody *ngIf="loading">
+              <tr><td colspan="5" class="dataTables_empty">Loading...</td></tr>
+            </tbody>
+           
+            <tbody *ngIf="!loading">
+              <tr *ngFor="let data of datalist; let i = index;">
+                <td>{{i+1}}</td>
+                <td>{{data?.firstName+" "+data?.lastName}}</td>
+                <td>{{data?.mobileNumber}}</td>
+                <td>{{data?.email}}</td>
+                <td>{{data?.schoolId ? data?.schoolId?.schoolName+" "+data?.schoolId?.address : "-"}}</td>
+
+                <td>{{data?.userType}}</td>
+                <td>{{data.createdAt | date:'dd/MM/yyyy hh:mm a'}}</td>
+                <td>
+                  <button type="button" [disabled]="loading" (click)="asssignSubject(data._id,i,assignsubject)" class="btn btn-secondary me-3">
+                    <i class="fa fa-trash" title="Assign Subject" style="cursor: pointer;" aria-hidden="true"></i>
+                  </button>
+                 
+                </td>
+              </tr>
+            
+              
+            </tbody>
+          </table>
+        </div>
+      </main>  
+    </div>
+    
+  </div>
+</div>
