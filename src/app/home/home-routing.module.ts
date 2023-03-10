@@ -54,6 +54,9 @@ import { ReferralCodeUsersComponent } from '../referral-code-users/referral-code
 import { AdminDashboardComponent } from '../admin-dashboard/admin-dashboard.component';
 import { SchoolDashboardComponent } from '../school-dashboard/school-dashboard.component';
 import { AppModulesComponent } from '../app-modules/app-modules.component';
+import { CaseStudyComponent } from "../case-study/case-study.component";
+import { RemedialLearningComponent } from "../remedial-learning/remedial-learning.component";
+import { ExamScheduleComponent } from "../exam-schedule/exam-schedule.component";
 
 const routes: Routes = [
   { path: 'app-module', component: AppModulesComponent },
@@ -165,6 +168,12 @@ const routes: Routes = [
   { path: 'role-cost-manage', component: RoleCostManageComponent },
   { path: 'referral-code-manage', component: ReferralCodeManageComponent },
   { path: 'referral-code-users', component: ReferralCodeUsersComponent },
+  { path: "case-study", component: CaseStudyComponent },
+  { path: "remedial-learning", component: RemedialLearningComponent },
+  { path: "exam-schedule", component: ExamScheduleComponent },
+
+
+
   // { path: 'admin-dashboard', component: AdminDashboardComponent },
 
 ];

@@ -75,6 +75,9 @@ import { AppModulesComponent } from '../app-modules/app-modules.component';
 import { MatTableExporterModule } from 'mat-table-exporter';
 import { GoogleMapsModule } from '@angular/google-maps'
 import {NgxPrintModule} from 'ngx-print';
+import { CaseStudyComponent } from "../case-study/case-study.component";
+import { RemedialLearningComponent } from "../remedial-learning/remedial-learning.component";
+import { ExamScheduleComponent } from "../exam-schedule/exam-schedule.component";
 
 
 @NgModule({
@@ -150,7 +153,10 @@ import {NgxPrintModule} from 'ngx-print';
     ReferralCodeUsersComponent,
     AdminDashboardComponent,
     SchoolDashboardComponent,
-    AppModulesComponent
+    AppModulesComponent,
+    CaseStudyComponent,
+    RemedialLearningComponent,
+    ExamScheduleComponent
   ],
   entryComponents: [EditExamEvaluationComponent, SelectTeacherComponent],
 })

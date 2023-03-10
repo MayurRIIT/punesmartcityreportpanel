@@ -1,0 +1,20 @@
+.auto-scroll {
+  height: 85vh;
+  overflow-y: auto;
+  overflow-x: auto;
+  display: block;
+}
+
+.heading {
+  font-weight: bold;
+  font-size: larger;
+  color: black;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: #ffffff;
+}
+
+.mat-row:nth-child(even) {
+  background-color: #f2f2f2;
+}

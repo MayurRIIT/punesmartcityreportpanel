@@ -44,6 +44,7 @@ export class SidenavmenuComponent implements OnInit {
         //webMainModules , roleModules
         //this.sideMenuList = response.result.roleModules.moduleArray;let moduleArray = response.result.roleModules.moduleArray;
         let moduleArray = response.result.roleModules.moduleArray;
+       
         let webMainModules = response.result.webMainModules;
 
         let expandsidemenuid = "";
@@ -84,6 +85,47 @@ export class SidenavmenuComponent implements OnInit {
          
         });
 
+        if(obj['6286a8fc3a548353cd043bc3']){
+          let obj11 = {
+            aliasName : "",
+            createdAt: "2021-11-18T13:27:57.580Z",
+            name: "Case Study",
+            sequenceNumber: 1,
+            status: "ACTIVE",
+            thumbnail: "fa fa-bullseye",
+            updatedAt: "2021-11-18T13:27:57.580Z",
+            url: "/home/case-study",
+            _id : 'case-study',
+            webMainModuleId : obj['6286a8fc3a548353cd043bc3']
+
+          }
+          let obj1111 = {
+            aliasName : "",
+            createdAt: "2021-11-18T13:27:57.580Z",
+            name: "Remedial Learning",
+            sequenceNumber: 1,
+            status: "ACTIVE",
+            thumbnail: "fa fa-user-secret",
+            updatedAt: "2021-11-18T13:27:57.580Z",
+            url: "/home/remedial-learning",
+            _id : 'remedial-learning',
+            webMainModuleId : obj['6286a8fc3a548353cd043bc3']
+          }
+          let obj111 = {
+            aliasName : "",
+            createdAt: "2021-11-18T13:27:57.580Z",
+            name: "Class/Exam Schedule",
+            sequenceNumber: 1,
+            status: "ACTIVE",
+            thumbnail: "fa fa-users",
+            updatedAt: "2021-11-18T13:27:57.580Z",
+            url: "/home/exam-schedule",
+            _id : 'exam-schedule',
+            webMainModuleId : obj['6286a8fc3a548353cd043bc3']
+          }
+          obj['6286a8fc3a548353cd043bc3'].children.push(obj1111,obj111,obj11);
+        }
+        //console.log(obj,"-------------");
         moduleArray = [];
         for (let key in obj) {
           moduleArray.push(obj[key]);
